@@ -1,0 +1,42 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1250">
+<title> infantry object </title>
+</head>
+<body>
+<a name="infantry">
+<hr>
+<infantry>
+<big><strong>infantry</strong> object</big><br><br>
+<big>Functions</big>
+<pre>
+<infantry_functions_begin>
+private:
+void CallBeginCrawlMode()
+void CallEndCrawlMode(int bForceEnd)
+void CallSetLandToAirMode()
+void CallSetCrawlToAirMode()
+void CallSetAirToLandMode()
+void CallAttackTarget(unit uTarget, int nShootCount)
+void CallAttackPoint(int nX, int nY, int nShootCount)
+void CallStopAttack()
+void CallMoveCrewInsideObject(unit uTarget)
+int  IsBeginningCrawlMode()
+int  IsEndingCrawlMode()
+int  IsSettingLandToAirMode()
+int  IsSettingAirToLandMode()
+int  IsAttacking()
+int  IsInAttackingAnimFrame()
+int  IsEnteringObject()
+int  CanMoveCrewInsideObject(unit uTarget)
+int  FindFreePlaceToMoveCrewInsideObject(unit uTarget, int& pX, int& pY)
+int  IsInGoodPlaceToMoveCrewInsideObject(unit uTarget)
+int  IsObjectGoingToLand(unit uTarget)
+int  IsCrawlModeCommandWithEndCommand()
+<infantry_functions_private_end>
+<infantry_functions_end>
+</pre>
+<hr>
+<small><i>EarthC documentation generated automatically [2005-07-22]</i></small>
+</body>
+</html>

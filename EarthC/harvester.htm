@@ -1,0 +1,66 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1250">
+<title> harvester object </title>
+</head>
+<body>
+<a name="harvester">
+<hr>
+<harvester>
+<big><strong>harvester</strong> object</big><br><br>
+<big>Functions</big>
+<pre>
+<harvester_functions_begin>
+private:
+void CallHarvestPassiveResource(unit uResource)
+void CallHarvestLiquidResource(int nX, int nY)
+void CallStopHarvest()
+void CallPutResourceToRefinery(unit uRefinery)
+int  IsHarvesting()
+int  IsPuttingResourceToRefinery()
+int  CanHarvestPassiveResource(unit uResource)
+int  IsInGoodPlaceToHarvest(unit uResource)
+int  GetAngleToResource(unit uResource)
+void FindPositionToHarvestPassiveResource(unit uResource, int& pX, int& pY)
+int  MustLandNearResource()
+int  GetAirHarvestHeight(unit uResource)
+int  MustTransportResourceToRefinery()
+int  HaveFullResources()
+int  HaveAnyResource()
+int  GetResourcesSizePercent()
+int  IsInGoodPlaceToPutResourceToRefinery(unit uRefinery)
+int  CanTransportResourceToRefinery(unit uRefinery)
+void GetRefineryTransportResourcePos(unit uRefinery, int& pX, int& pY, int& pZ, int& pAlpha)
+unit FindClosestResourceRefinery()
+unit FindNextPassiveResource(unit uPrevResource, int nPrefferedType)
+int  CanHarvestLiquidResource(int nX, int nY)
+int  FindLiquidNearBank(int& pX, int& pY)
+void FindPositionToHarvestLiquidResource(int nLiquidX, int nLiquidY, int& pX, int& pY)
+int  FindLiquidResource(int nPrefferedType, int& pX, int& pY)
+int  FindLiquidResource(int nPrefferedType, int nFromX, int nFromY, int& pX, int& pY)
+int  GetAngleToLiquidResource(int nLiquidX, int nLiquidY)
+int  GetAirLiquidHarvestHeight(int nLiquidX, int nLiquidY)
+int  IsInGoodPlaceToHarvest(int nLiquidX, int nLiquidY)
+int  GetResourceType(unit uResource)
+int  GetResourceType(int nLiquidX, int nLiquidY)
+void SetHarvestSource(int nLiquidX, int nLiquidY)
+int  GetHarvestSource(int& pLiquidX, int& pLiquidY)
+void SetHarvestSource(unit uSource)
+unit GetHarvestSource()
+void SetHarvestDestination(unit uDestination)
+unit GetHarvestDestination()
+int  IsOtherHarvesterHarvestResource(unit uResource)
+int  IsOtherHarvesterHarvestResource(int nX, int nY)
+int  CanPutAnyResourceToRefinery(unit uRefinery)
+int  CanPutAnyResourceToRefinery()
+int  CanResetOtherResources(unit uResource)
+int  CanResetOtherResources(int nX, int nY)
+unit FindFreeRefinery(unit uRefinery)
+int  IsOtherHarvesterPuttingResourceToRefinery(unit uRefinery)
+<harvester_functions_private_end>
+<harvester_functions_end>
+</pre>
+<hr>
+<small><i>EarthC documentation generated automatically [2005-07-22]</i></small>
+</body>
+</html>

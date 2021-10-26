@@ -1,0 +1,294 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1250">
+<title> player object </title>
+</head>
+<body>
+<a name="player">
+<hr>
+<player>
+<big><strong>player</strong> object</big><br><br>
+<big>Functions</big>
+<pre>
+<player_functions_begin>
+public:
+int  PlayerCommand(int nCommandNum, int nParam)
+void SetTimer(int nTimer, int nInterval)
+void SetTimerDelay(int nTimer, int nDelay)
+void LookAt(int nX, int nY, int nZ, int nAngle, int nViewAngle)
+void DelayedLookAt(int nX, int nY, int nZ, int nAngle, int nViewAngle, int nDelay, int bClockWise)
+void GetCameraPos(int& pX, int& pY, int bAbsPos, int& pZ, int& pAngle, int& pViewAngle)
+int  PlayCutscene(string strTrackName, int bFadeInOut, int bDisableInterface, int bHideInterface)
+int  GetPlayCutsceneFadeInDelay()
+int  StopCutscene()
+void PlayWave(string strWave)
+void PlayWave(string strWave, int nVolumeIndex, int nDelayTicks)
+void CacheWave(string strWave)
+void RemoveDelayedWaves()
+void PlayMusic(string strMusic, int bForceIfTurnOff)
+void PlayCutsceneMusic(string strMusic)
+void FadeInCutscene(int nTicks, int nR, int nG, int nB)
+void FadeOutCutscene(int nTicks, int nR, int nG, int nB)
+void PlayBriefing(string pszAnimMeshID, string pszText, string strWave, int nBriefingScriptNum, int bModal)
+void AddBriefingDialog(string pszAnimMeshID, string pszTalkerName, string pszText, string strWave)
+void PlayBriefingDialog(int bAddToDialogsList, int nBriefingScriptNum, int bModal)
+void AddBriefingToList()
+void RegisterGoal(int nGoalNum, string strText)
+void EnableGoal(int nGoalNum, int bEnable)
+void EnableGoal(int nGoalNum, int bEnable, int bNotify)
+int  IsGoalEnabled(int nGoalNum)
+void SetGoalState(int nGoalNum, int nState)
+void SetGoalState(int nGoalNum, int nState, int bNotify)
+int  GetGoalState(int nGoalNum)
+int  GetNumberOfEnabledGoals()
+void SetConsoleText(string strText)
+void SetConsoleText(string strText, int nTicks)
+void SetConsoleText(string strText, int nTicks, int bBreakStepAhead)
+void SetConsole2Text(string strText)
+void SetConsole2Text(string strText, int nTicks)
+void SetConsole2Text(string strText, int nTicks, int bBreakStepAhead)
+void SetLowConsoleText(string strText)
+void SetLowConsoleText(string strText, int nTicks)
+void SetLowConsoleText(string strText, int nTicks, int bBreakStepAhead)
+void EnableInterface(int bEnable)
+void ShowInterface(int bShow)
+void ShowInterface(int bShowInterface, int bShowIngameGraphics)
+void AddMapSign(int nGx, int nGy, int nSignNum, int nTicks)
+void RemoveMapSign(int nGx, int nGy)
+unit CreateObject(string strObjectID, int nX, int nY, int nZ, int nAlpha)
+unit CreateAgent(string pszAgentID, string strUnitID, int nX, int nY, int nZ, int nAlpha, int nHireTicks)
+int  GetRace()
+int  GetIFF()
+int  GetIFFNum()
+int  IsAlive()
+player GetPlayer(int nIFFNum)
+int  IsAIPlayer()
+int  IsUserPlayer()
+void SetSendENResults(int bSet)
+void GameVictory(int bAddAgentsReputationOnVictory, int bShowStatistic)
+void GameDefeat(int bShowStatistic)
+void SetEnemy(player pEnemy)
+void SetAlly(player pAlly)
+void SetNeutral(player pNeutral)
+int  IsEnemy(player pEnemy)
+int  IsAlly(player pAlly)
+int  IsNeutral(player pNeutral)
+int  GetNumberOfUnits()
+int  GetNumberOfVehicles()
+int  GetNumberOfInfantry()
+int  GetNumberOfUnitsCrew()
+int  GetNumberOfBuildingsCrew()
+int  GetNumberOfUnitsWithChasis(string strChasisID, int bTheSameUpdate)
+int  GetNumberOfBuildings()
+int  GetNumberOfBuildings(int nBuildingType)
+int  GetNumberOfBuildings(string strBuildingID)
+int  GetNumberOfBuildings(string strBuildingID, int bTheSameUpdate)
+int  GetNumberOfNoCopulaBuildings()
+int  GetNumberOfCopulaBuildings()
+int  GetNumberOfBuildCopulaBuildings()
+int  GetNumberOfMoveCopulaBuildings()
+int  GetNumberOfTransformationCopulas()
+unit GetUnit(int nNum)
+unit GetBuilding(int nNum)
+unit GetTransformationCopula(int nNum)
+void SetPlayerResourceStorageSize(int nResNum, int nSize)
+int  GetPlayerResourceStorageSize(int nResNum)
+void SetUsePlayerResourceStorageAsNormal(int bSet)
+int  AddResource(int nResNum, int nValue)
+int  GetResource(int nResNum, int bWithNotPowered, int bWithPlayerStorage)
+void GetResource(int bWithNotPowered, int bWithPlayerStorage, int& pRes0, int& pRes1, int& pRes2)
+void SetPlayerMaxUnitLimitSize(int nSize)
+int  GetPlayerMaxUnitLimitSize()
+void SetUseUnitLimit(int bSet)
+void SetForceUseUnitLimit(int bSet)
+void SetUseMaxUnitLimitFromBuildings(int bSet)
+int  GetCurrMaxUnitLimitSize()
+int  GetCurrUnitLimitSize()
+void AddObjectTemplate(string strTemplate)
+void EnableAI(int bEnable)
+void LoadScript(string strScript)
+void SetName(string strName)
+string GetName()
+void SetShowInStatistics(int bSet)
+void SetAllowedAllyIFF(int nIFF)
+int  GetAllowedAllyIFF()
+void AddIgnoreNotifyAttackUnit(string strObjectID, int bAdd)
+void AddBlockShootingMissile(string strMissileID, int bAdd)
+void SetMaxAgentsInPlayerCount(int nMaxCount)
+int  GetPlayerReputationInAgent(string strAgentID)
+void AddReputationInAgent(string strAgentID, int nAddReputation)
+void AddAgentsReputationOnVictory()
+int  GetAgentAITypes()
+void SetForceAgentAITypes(int nAgentAITypes)
+int  GetForcedAgentAITypes()
+void EnableResearch(string strResearchID, int bEnable)
+void EnableAllResearches(int bEnable)
+int  IsEnabledResearch(string strResearchID)
+void AddResearch(string strResearchID)
+int  IsResearchAvailable(string strResearchID)
+int  IsResearchResearched(string strResearchID)
+void EnableBuilding(string strBuildingID, int bEnable)
+int  IsEnabledBuilding(string strBuildingID)
+void EnableUnit(string strUnitID, int bEnable)
+int  IsEnabledUnit(string strUnitID)
+void SetResearchTimeMultiplyPercent(int nPercent)
+void SetResearchPriceMultiplyPercent(int nPercent)
+void SetBuildBuildingsTimeMultiplyPercent(int nPercent)
+void SetBuildBuildingsPriceMultiplyPercent(int nPercent)
+int  SetCommandBuildBuilding(string strBuildingID, int nX, int nY, int nAlpha, unit uBuilder)
+int  CreateOrbitalBuildBuilding(string strBuildingID, int nX, int nY, int nAlpha)
+int  IsFogInPoint(int nX, int nY)
+void ResetFogInArea(int nGx, int nGy, int nGRange)
+void ShowObjectsInArea(int nGx, int nGy, int nGRange, int nShowIFFMask, int nShowObjectsType)
+void ClearSaveUnitBuffers()
+void ClearSaveUnitBuffer(int nBufferNum)
+void SaveUnit(int nBufferNum, unit CStoreable* pUnit)
+void SaveUnit(int nBufferNum, unit CStoreable* pUnit, int bSaveWithCrewInside, int bSaveVehicleWithCrew)
+int  IsUnitSavedInAnyBuffer(unit CStoreable* pUnit)
+int  GetNumberOfSavedUnitsInBuffer(int nBufferNum)
+unit RestoreSavedUnits(int nBufferNum, int nX, int nY, int nZ, int nAlpha)
+void SetAIControlOptions(int dwControlFlags, int bEnabled)
+int  IsSetAIControlOptions(int eControlOption)
+void SetMaxWarAIPlatoonsCount(int nWarAIPlatoonsCount)
+void AddNewAIVariantResearch(int eVariantType, string strResearchName)
+void SetAIVariantStatePercent(int eVariantType, int eAIStateNum, int nAIStatePercent)
+void SetAIVariant(int eVariantType)
+void EnableMessages(int bEnable)
+void SetDrawAllObjects(int bSet)
+void SetDefaultAIAttackTimeDelay(int nAttackTimeSecDelay)
+void SetDefaultAIPlatoonsSize(int nInfantry, int nJeep, int nTank, int nArtilery)
+void SetMaxCheatResourcesCount(int nMaxCheatResourcesCount)
+void SetAntiUnitsRelations(int nMinRelationPercent, int nMaxRelationPercent, int nMaxKillTicks, int nMinKillTicks)
+void AddAIBuildingOrder(int eBuildingType)
+void SetMaxHarvestingObjectsCount(int nMaxHarvestingObjectsCount)
+void SetUseAgentsReputation(int bSet)
+void SetQueenPlatoonMaxSize(int nMaxQueenPlatoonSize)
+void SetCameraFPPMode(int bSet)
+void SetCameraFPPMode(int bSet, int bForceRemainInMode)
+<player_functions_public_end>
+<player_functions_end>
+</pre>
+<big>Commands</big>
+<pre>
+<player_commands_begin>
+int  Initialize()
+int  Uninitialize()
+int  PlayerCommand1(int)
+int  PlayerCommand2(int)
+int  PlayerCommand3(int)
+int  PlayerCommand4(int)
+int  PlayerCommand5(int)
+<player_commands_end>
+</pre>
+<big>Events</big>
+<pre>
+<player_events_begin>
+int  AIPlayerFlags()
+void ChangedAgentAITypes(int, int)
+void Timer0()
+void Timer1()
+void Timer2()
+void Timer3()
+void Timer4()
+void Timer5()
+void Timer6()
+void Timer7()
+<player_events_end>
+</pre>
+<big>Enums</big>
+<pre>
+<player_enums_begin>
+  eAIResearchVariantUniversal
+  eAIResearchVariantAir
+  eAIResearchVariantDefense
+  eAIStateBuildBase
+  eAIStateDefence
+  eAIStateAttack
+  eAIStateResearchVariant
+  eAIStateResearchCannon
+  eAIStateResearchArmour
+  eAIStateResearchEngine
+AddAIOrder - dwTypeFlags:
+  eAIControlTurnOn
+  eAIControlDefault
+  eAIControlAll
+  eAIControlChooseEnemies
+  eAIControlAINeutralAI
+  eAIControlChooseAIVariant
+  eAIControlPatrols
+  eAIControlResources
+  eAIControlBasePower
+  eAIControlBuildBase
+  eAIControlResearches
+  eAIControlSpyEnemies
+  eAIControlConstructUnits
+  eAIControlAttack
+  eAIControlAttackPositions
+  eAIControlAttackStrategy
+  eAIControlAttackCapture
+  eAIControlDefence
+  eAIControlSupply
+  eAIControlRepairing
+  eAIControlTransport
+  eAIControlUpgradeCannons
+  eAIControlDefenceCannons
+  eAIControlWarUnitsFromScript
+  eAIControlUpdatesLevel1
+  eAIControlUpdatesLevel2
+  eAIControlBuildWall
+  eAIHarvestOutsideBase
+  eAIControlAgentsAuction
+  eAIAttackInNightOnly
+  eAIRebuildAllBuildings
+  eAIPeaceTime
+GetAgentAITypes, SetForceAgentAITypes:
+  eAgentAIRecon
+  eAgentAIHarvest
+  eAgentAIUnitsConstructor
+  eAgentAIPower
+  eAgentAIAttackEnemy
+  eAgentAIResearches
+  eAgentAIBuildBase
+  eAgentAICannonsUpgrade
+  eAgentAIEnemyAgentsCorruption
+AddAIBuildingOrder - eBuildingType:
+  eAIBuildingAnyType
+  eAIBuildingDefenceTower
+  eAIBuildingSingleConnector
+  eAIBuildingMultiConnector
+  eAIBuildingResourceStorage
+  eAIBuildingRadar
+  eAIBuildingDefenceSDITower
+  eAIBuildingShieldGenerator
+  eAIBuildingDefenceStation
+  eAIBuildingMainBase
+  eAIBuildingTowerBase
+  eAIBuildingPowerPlant
+  eAIBuildingPowerCordinateCenter
+  eAIBuildingPowerTransmitter
+  eAIBuildingPowerAccelerator
+  eAIBuildingResourceRefinery
+  eAIBuildingLandingZone
+  eAIBuildingResourceMine
+  eAIBuildingResearchCenter
+  eAIBuildingUnitsFactory
+  eAIBuildingInfantryFactory
+  eAIBuildingPlanesFactory
+  eAIBuildingAmmoFactory
+  eAIBuildingTeleport
+  eAIBuildingUnitsExit
+  eAIBuildingWall
+  eAIBuildingWallGate
+  eAIBuildingWallCannon
+  eAIBuildingLaserWall
+  eAIBuildingArmedLaserWall
+  eAIBuildingSingleWall
+  eAIBuildingDefenceBunker
+  eAIBuildingHighDefenceTower
+  eAIBuildingSpecialWeapon
+<player_enums_end>
+</pre>
+<hr>
+<small><i>EarthC documentation generated automatically [2005-07-22]</i></small>
+</body>
+</html>

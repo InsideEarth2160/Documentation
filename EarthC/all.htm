@@ -1,0 +1,1597 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1250">
+<title> EarthC functions </title>
+</head>
+<body>
+<hr>
+<links_begin><pre><big>
+<a href="#string"><strong>string</strong></a>
+<a href="#array"><strong>array</strong></a>
+<a href="#rootobject"><strong>rootobject</strong></a>
+    <a href="#object"><strong>object</strong></a>
+        <a href="#campaign"><strong>campaign</strong></a>
+        <a href="#player"><strong>player</strong></a>
+        <a href="#mission"><strong>mission</strong></a>
+    <a href="#unit"><strong>unit</strong></a>
+        <a href="#infantry"><strong>infantry</strong></a>
+            <a href="#hacker"><strong>hacker</strong></a>
+            <a href="#hero"><strong>hero</strong></a>
+        <a href="#buildrobot"><strong>buildrobot</strong></a>
+        <a href="#harvester"><strong>harvester</strong></a>
+        <a href="#supplier"><strong>supplier</strong></a>
+        <a href="#plane"><strong>plane</strong></a>
+        <a href="#laserunit"><strong>laserunit</strong></a>
+        <a href="#transporter"><strong>transporter</strong></a>
+</big></pre><links_end>
+<br>
+<objects_begin>
+<a name="string">
+<hr>
+<string>
+<big><strong>string</strong> object</big><br><br>
+<big>Functions</big>
+<pre>
+<string_functions_begin>
+public:
+void Copy(string)
+void Append(string)
+int  Compare(string)
+int  CompareNoCase(string)
+void Format(string, int)
+void Format(string, int, int)
+void Format(string, int, int, int)
+void FormatTranslate(string, int)
+void FormatTranslate(string, int, int)
+void FormatTranslate(string, int, int, int)
+void Translate(string)
+int  sscanf(string, int&)
+int  sscanf(string, int&, int&)
+int  sscanf(string, int&, int&, int&)
+<string_functions_public_end>
+<string_functions_end>
+</pre>
+<a name="array">
+<hr>
+<array>
+<big><strong>array</strong> object</big><br><br>
+<big>Functions</big>
+<pre>
+<array_functions_begin>
+public:
+void Create(int)
+void Delete()
+int  Exist()
+int  GetSize()
+void SetSize(int)
+void RemoveAll()
+int  Add(TYPE)
+void SetAtGrow(int, TYPE)
+void InsertAt(int, TYPE)
+void RemoveAt(int)
+int  Append(array)
+void Copy(array)
+void Sort(int)
+void SortWithKeys(array, int, int)
+<array_functions_public_end>
+<array_functions_end>
+</pre>
+<a name="rootobject">
+<hr>
+<rootobject>
+<big><strong>rootobject</strong> object</big><br><br>
+<big>Functions</big>
+<pre>
+<rootobject_functions_begin>
+private:
+void Trace(string strString)
+void TraceD(string strString)
+void Trace(int nValue)
+void TraceD(int nValue)
+void Trace(unit)
+void TraceD(unit)
+int  Rand(int nRand)
+int  sqrt(int nVal)
+void TurnRadiusByAngle(int nR, int nAngle, int& pDx, int& pDy)
+int  Distance(int nX, int nY, int nX2, int nY2)
+<rootobject_functions_private_end>
+<rootobject_functions_end>
+</pre>
+<a name="object">
+<hr>
+<object>
+<big><strong>object</strong> object</big><br><br>
+<big>Functions</big>
+<pre>
+<object_functions_begin>
+private:
+void SendCustomEvent(int nEvent, int nParam1, int nParam2, int nParam3, int nParam4)
+int  SendCampaignEventGetDifficultyLevel()
+void SetInterfaceOptions(int nOptions)
+int  IsUserSettingsLockedCameraAngle()
+void SaveGameRestart(string strRestartSaveName)
+void SaveEndMissionGame(int nMissionNum, string strSaveName)
+void SetFinishedCampaign()
+void SetFinishedCampaign(string strCampaignScript, int bSet)
+int  IsFinishedCampaign(string strCampaignScript)
+string GetCurrentCampaign()
+void LoadCustomParameters(string strParamsFile)
+void CopyCustomObjectID(string pszObjectID, string pszNewObjectID, string strNewMesh)
+<object_functions_private_end>
+<object_functions_end>
+</pre>
+<big>Enums</big>
+<pre>
+<object_enums_begin>
+SetInterfaceOptions - nOptions:
+  eNoConstructorDialog
+  eNoResearchCenterDialog
+  eNoBuildingUpgradeDialog
+  eNoBuildPanelDialog
+  eNoMoneyConfigDialog
+  eNoGoalsDialog
+  eNoCommandsDialog
+  eNoMapDialog
+  eNoAllianceDialog
+  eForceAllianceDialog
+  eNoMoneyDisplay
+  eNoMenuButton
+  eNoPIPDialog
+  eShowStatisticsOnExitSkirmish
+<object_enums_end>
+</pre>
+<a name="campaign">
+<hr>
+<campaign>
+<big><strong>campaign</strong> object</big><br><br>
+<big>Functions</big>
+<pre>
+<campaign_functions_begin>
+private:
+void CreateGamePlayer(int nIFFNum, int nSideColor, int nRace, int bLocalPlayer)
+void SetLoadMissionsCount(int nCount)
+void LoadMission(string pszLevel, string strScript, int nWorldNum)
+void SetActiveWorld(int nWorldNum)
+void EndMission(int nWorldNum, int nResult)
+void EnableWorld(int nWorldNum, int bEnable)
+void EndGame()
+void ShowChooseMissionDialog()
+void AddMissionToChooseDialog(string pszMissionName, string pszMissionDescription, string strMissionMesh, int nMeshViewParamsIndex)
+void SetTimer(int nTimer, int nInterval)
+void SetTimerDelay(int nTimer, int nDelay)
+<campaign_functions_private_end>
+<campaign_functions_end>
+</pre>
+<big>Commands</big>
+<pre>
+<campaign_commands_begin>
+int  Initialize()
+int  Uninitialize()
+int  DifficultyLevel(int)
+int  RequiredCampaigns()
+<campaign_commands_end>
+</pre>
+<big>Events</big>
+<pre>
+<campaign_events_begin>
+void EndingMission(int, int)
+void EndMission(int, int)
+void ChooseMission(int)
+int  GetDifficultyLevel()
+void Timer0()
+void Timer1()
+void Timer2()
+void Timer3()
+void Timer4()
+void Timer5()
+void Timer6()
+void Timer7()
+void CustomEvent0(int, int, int, int)
+void CustomEvent1(int, int, int, int)
+void CustomEvent2(int, int, int, int)
+void CustomEvent3(int, int, int, int)
+void CustomEvent4(int, int, int, int)
+void CustomEvent5(int, int, int, int)
+void CustomEvent6(int, int, int, int)
+void CustomEvent7(int, int, int, int)
+<campaign_events_end>
+</pre>
+<a name="player">
+<hr>
+<player>
+<big><strong>player</strong> object</big><br><br>
+<big>Functions</big>
+<pre>
+<player_functions_begin>
+public:
+int  PlayerCommand(int nCommandNum, int nParam)
+void SetTimer(int nTimer, int nInterval)
+void SetTimerDelay(int nTimer, int nDelay)
+void LookAt(int nX, int nY, int nZ, int nAngle, int nViewAngle)
+void DelayedLookAt(int nX, int nY, int nZ, int nAngle, int nViewAngle, int nDelay, int bClockWise)
+void GetCameraPos(int& pX, int& pY, int bAbsPos, int& pZ, int& pAngle, int& pViewAngle)
+int  PlayCutscene(string strTrackName, int bFadeInOut, int bDisableInterface, int bHideInterface)
+int  GetPlayCutsceneFadeInDelay()
+int  StopCutscene()
+void PlayWave(string strWave)
+void PlayWave(string strWave, int nVolumeIndex, int nDelayTicks)
+void CacheWave(string strWave)
+void RemoveDelayedWaves()
+void PlayMusic(string strMusic, int bForceIfTurnOff)
+void PlayCutsceneMusic(string strMusic)
+void FadeInCutscene(int nTicks, int nR, int nG, int nB)
+void FadeOutCutscene(int nTicks, int nR, int nG, int nB)
+void PlayBriefing(string pszAnimMeshID, string pszText, string strWave, int nBriefingScriptNum, int bModal)
+void AddBriefingDialog(string pszAnimMeshID, string pszTalkerName, string pszText, string strWave)
+void PlayBriefingDialog(int bAddToDialogsList, int nBriefingScriptNum, int bModal)
+void AddBriefingToList()
+void RegisterGoal(int nGoalNum, string strText)
+void EnableGoal(int nGoalNum, int bEnable)
+void EnableGoal(int nGoalNum, int bEnable, int bNotify)
+int  IsGoalEnabled(int nGoalNum)
+void SetGoalState(int nGoalNum, int nState)
+void SetGoalState(int nGoalNum, int nState, int bNotify)
+int  GetGoalState(int nGoalNum)
+int  GetNumberOfEnabledGoals()
+void SetConsoleText(string strText)
+void SetConsoleText(string strText, int nTicks)
+void SetConsoleText(string strText, int nTicks, int bBreakStepAhead)
+void SetConsole2Text(string strText)
+void SetConsole2Text(string strText, int nTicks)
+void SetConsole2Text(string strText, int nTicks, int bBreakStepAhead)
+void SetLowConsoleText(string strText)
+void SetLowConsoleText(string strText, int nTicks)
+void SetLowConsoleText(string strText, int nTicks, int bBreakStepAhead)
+void EnableInterface(int bEnable)
+void ShowInterface(int bShow)
+void ShowInterface(int bShowInterface, int bShowIngameGraphics)
+void AddMapSign(int nGx, int nGy, int nSignNum, int nTicks)
+void RemoveMapSign(int nGx, int nGy)
+unit CreateObject(string strObjectID, int nX, int nY, int nZ, int nAlpha)
+unit CreateAgent(string pszAgentID, string strUnitID, int nX, int nY, int nZ, int nAlpha, int nHireTicks)
+int  GetRace()
+int  GetIFF()
+int  GetIFFNum()
+int  IsAlive()
+player GetPlayer(int nIFFNum)
+int  IsAIPlayer()
+int  IsUserPlayer()
+void SetSendENResults(int bSet)
+void GameVictory(int bAddAgentsReputationOnVictory, int bShowStatistic)
+void GameDefeat(int bShowStatistic)
+void SetEnemy(player pEnemy)
+void SetAlly(player pAlly)
+void SetNeutral(player pNeutral)
+int  IsEnemy(player pEnemy)
+int  IsAlly(player pAlly)
+int  IsNeutral(player pNeutral)
+int  GetNumberOfUnits()
+int  GetNumberOfVehicles()
+int  GetNumberOfInfantry()
+int  GetNumberOfUnitsCrew()
+int  GetNumberOfBuildingsCrew()
+int  GetNumberOfUnitsWithChasis(string strChasisID, int bTheSameUpdate)
+int  GetNumberOfBuildings()
+int  GetNumberOfBuildings(int nBuildingType)
+int  GetNumberOfBuildings(string strBuildingID)
+int  GetNumberOfBuildings(string strBuildingID, int bTheSameUpdate)
+int  GetNumberOfNoCopulaBuildings()
+int  GetNumberOfCopulaBuildings()
+int  GetNumberOfBuildCopulaBuildings()
+int  GetNumberOfMoveCopulaBuildings()
+int  GetNumberOfTransformationCopulas()
+unit GetUnit(int nNum)
+unit GetBuilding(int nNum)
+unit GetTransformationCopula(int nNum)
+void SetPlayerResourceStorageSize(int nResNum, int nSize)
+int  GetPlayerResourceStorageSize(int nResNum)
+void SetUsePlayerResourceStorageAsNormal(int bSet)
+int  AddResource(int nResNum, int nValue)
+int  GetResource(int nResNum, int bWithNotPowered, int bWithPlayerStorage)
+void GetResource(int bWithNotPowered, int bWithPlayerStorage, int& pRes0, int& pRes1, int& pRes2)
+void SetPlayerMaxUnitLimitSize(int nSize)
+int  GetPlayerMaxUnitLimitSize()
+void SetUseUnitLimit(int bSet)
+void SetForceUseUnitLimit(int bSet)
+void SetUseMaxUnitLimitFromBuildings(int bSet)
+int  GetCurrMaxUnitLimitSize()
+int  GetCurrUnitLimitSize()
+void AddObjectTemplate(string strTemplate)
+void EnableAI(int bEnable)
+void LoadScript(string strScript)
+void SetName(string strName)
+string GetName()
+void SetShowInStatistics(int bSet)
+void SetAllowedAllyIFF(int nIFF)
+int  GetAllowedAllyIFF()
+void AddIgnoreNotifyAttackUnit(string strObjectID, int bAdd)
+void AddBlockShootingMissile(string strMissileID, int bAdd)
+void SetMaxAgentsInPlayerCount(int nMaxCount)
+int  GetPlayerReputationInAgent(string strAgentID)
+void AddReputationInAgent(string strAgentID, int nAddReputation)
+void AddAgentsReputationOnVictory()
+int  GetAgentAITypes()
+void SetForceAgentAITypes(int nAgentAITypes)
+int  GetForcedAgentAITypes()
+void EnableResearch(string strResearchID, int bEnable)
+void EnableAllResearches(int bEnable)
+int  IsEnabledResearch(string strResearchID)
+void AddResearch(string strResearchID)
+int  IsResearchAvailable(string strResearchID)
+int  IsResearchResearched(string strResearchID)
+void EnableBuilding(string strBuildingID, int bEnable)
+int  IsEnabledBuilding(string strBuildingID)
+void EnableUnit(string strUnitID, int bEnable)
+int  IsEnabledUnit(string strUnitID)
+void SetResearchTimeMultiplyPercent(int nPercent)
+void SetResearchPriceMultiplyPercent(int nPercent)
+void SetBuildBuildingsTimeMultiplyPercent(int nPercent)
+void SetBuildBuildingsPriceMultiplyPercent(int nPercent)
+int  SetCommandBuildBuilding(string strBuildingID, int nX, int nY, int nAlpha, unit uBuilder)
+int  CreateOrbitalBuildBuilding(string strBuildingID, int nX, int nY, int nAlpha)
+int  IsFogInPoint(int nX, int nY)
+void ResetFogInArea(int nGx, int nGy, int nGRange)
+void ShowObjectsInArea(int nGx, int nGy, int nGRange, int nShowIFFMask, int nShowObjectsType)
+void ClearSaveUnitBuffers()
+void ClearSaveUnitBuffer(int nBufferNum)
+void SaveUnit(int nBufferNum, unit CStoreable* pUnit)
+void SaveUnit(int nBufferNum, unit CStoreable* pUnit, int bSaveWithCrewInside, int bSaveVehicleWithCrew)
+int  IsUnitSavedInAnyBuffer(unit CStoreable* pUnit)
+int  GetNumberOfSavedUnitsInBuffer(int nBufferNum)
+unit RestoreSavedUnits(int nBufferNum, int nX, int nY, int nZ, int nAlpha)
+void SetAIControlOptions(int dwControlFlags, int bEnabled)
+int  IsSetAIControlOptions(int eControlOption)
+void SetMaxWarAIPlatoonsCount(int nWarAIPlatoonsCount)
+void AddNewAIVariantResearch(int eVariantType, string strResearchName)
+void SetAIVariantStatePercent(int eVariantType, int eAIStateNum, int nAIStatePercent)
+void SetAIVariant(int eVariantType)
+void EnableMessages(int bEnable)
+void SetDrawAllObjects(int bSet)
+void SetDefaultAIAttackTimeDelay(int nAttackTimeSecDelay)
+void SetDefaultAIPlatoonsSize(int nInfantry, int nJeep, int nTank, int nArtilery)
+void SetMaxCheatResourcesCount(int nMaxCheatResourcesCount)
+void SetAntiUnitsRelations(int nMinRelationPercent, int nMaxRelationPercent, int nMaxKillTicks, int nMinKillTicks)
+void AddAIBuildingOrder(int eBuildingType)
+void SetMaxHarvestingObjectsCount(int nMaxHarvestingObjectsCount)
+void SetUseAgentsReputation(int bSet)
+void SetQueenPlatoonMaxSize(int nMaxQueenPlatoonSize)
+void SetCameraFPPMode(int bSet)
+void SetCameraFPPMode(int bSet, int bForceRemainInMode)
+<player_functions_public_end>
+<player_functions_end>
+</pre>
+<big>Commands</big>
+<pre>
+<player_commands_begin>
+int  Initialize()
+int  Uninitialize()
+int  PlayerCommand1(int)
+int  PlayerCommand2(int)
+int  PlayerCommand3(int)
+int  PlayerCommand4(int)
+int  PlayerCommand5(int)
+<player_commands_end>
+</pre>
+<big>Events</big>
+<pre>
+<player_events_begin>
+int  AIPlayerFlags()
+void ChangedAgentAITypes(int, int)
+void Timer0()
+void Timer1()
+void Timer2()
+void Timer3()
+void Timer4()
+void Timer5()
+void Timer6()
+void Timer7()
+<player_events_end>
+</pre>
+<big>Enums</big>
+<pre>
+<player_enums_begin>
+  eAIResearchVariantUniversal
+  eAIResearchVariantAir
+  eAIResearchVariantDefense
+  eAIStateBuildBase
+  eAIStateDefence
+  eAIStateAttack
+  eAIStateResearchVariant
+  eAIStateResearchCannon
+  eAIStateResearchArmour
+  eAIStateResearchEngine
+AddAIOrder - dwTypeFlags:
+  eAIControlTurnOn
+  eAIControlDefault
+  eAIControlAll
+  eAIControlChooseEnemies
+  eAIControlAINeutralAI
+  eAIControlChooseAIVariant
+  eAIControlPatrols
+  eAIControlResources
+  eAIControlBasePower
+  eAIControlBuildBase
+  eAIControlResearches
+  eAIControlSpyEnemies
+  eAIControlConstructUnits
+  eAIControlAttack
+  eAIControlAttackPositions
+  eAIControlAttackStrategy
+  eAIControlAttackCapture
+  eAIControlDefence
+  eAIControlSupply
+  eAIControlRepairing
+  eAIControlTransport
+  eAIControlUpgradeCannons
+  eAIControlDefenceCannons
+  eAIControlWarUnitsFromScript
+  eAIControlUpdatesLevel1
+  eAIControlUpdatesLevel2
+  eAIControlBuildWall
+  eAIHarvestOutsideBase
+  eAIControlAgentsAuction
+  eAIAttackInNightOnly
+  eAIRebuildAllBuildings
+  eAIPeaceTime
+GetAgentAITypes, SetForceAgentAITypes:
+  eAgentAIRecon
+  eAgentAIHarvest
+  eAgentAIUnitsConstructor
+  eAgentAIPower
+  eAgentAIAttackEnemy
+  eAgentAIResearches
+  eAgentAIBuildBase
+  eAgentAICannonsUpgrade
+  eAgentAIEnemyAgentsCorruption
+AddAIBuildingOrder - eBuildingType:
+  eAIBuildingAnyType
+  eAIBuildingDefenceTower
+  eAIBuildingSingleConnector
+  eAIBuildingMultiConnector
+  eAIBuildingResourceStorage
+  eAIBuildingRadar
+  eAIBuildingDefenceSDITower
+  eAIBuildingShieldGenerator
+  eAIBuildingDefenceStation
+  eAIBuildingMainBase
+  eAIBuildingTowerBase
+  eAIBuildingPowerPlant
+  eAIBuildingPowerCordinateCenter
+  eAIBuildingPowerTransmitter
+  eAIBuildingPowerAccelerator
+  eAIBuildingResourceRefinery
+  eAIBuildingLandingZone
+  eAIBuildingResourceMine
+  eAIBuildingResearchCenter
+  eAIBuildingUnitsFactory
+  eAIBuildingInfantryFactory
+  eAIBuildingPlanesFactory
+  eAIBuildingAmmoFactory
+  eAIBuildingTeleport
+  eAIBuildingUnitsExit
+  eAIBuildingWall
+  eAIBuildingWallGate
+  eAIBuildingWallCannon
+  eAIBuildingLaserWall
+  eAIBuildingArmedLaserWall
+  eAIBuildingSingleWall
+  eAIBuildingDefenceBunker
+  eAIBuildingHighDefenceTower
+  eAIBuildingSpecialWeapon
+<player_enums_end>
+</pre>
+<a name="mission">
+<hr>
+<mission>
+<big><strong>mission</strong> object</big><br><br>
+<big>Functions</big>
+<pre>
+<mission_functions_begin>
+private:
+void SetStateDelay(int nDelay)
+int  GetStateDelay()
+void SetState(int nState)
+void SetState(int nState, int nDelay)
+void EndMission(int nResult)
+void ShowMissionFailedLoadDialog()
+void SetTimer(int nTimer, int nInterval)
+void SetTimerDelay(int nTimer, int nDelay)
+int  GetWorldTick()
+int  GetDayTime()
+player GetPlayer(int nPlayer)
+int  GetStartingPoint(int nNum, int& pX, int& pY)
+int  HaveStartingPoint(int nNum)
+void SetStartingPointPosition(int nNum, int nX, int nY)
+int  GetMarker(int nNum, int& pX, int& pY)
+int  HaveMarker(int nNum)
+int  HaveMarker(int nNum)
+int  GetLandHeight(int nX, int nY)
+int  GetFogInPoint(int nX, int nY, int nIFF)
+void LookAt(int nX, int nY, int nZ, int nAngle, int nViewAngle)
+void DelayedLookAt(int nX, int nY, int nZ, int nAngle, int nViewAngle, int nDelay, int bClockWise)
+void GetCameraPos(int& pX, int& pY, int bAbsPos, int& pZ, int& pAngle, int& pViewAngle)
+int  PlayCutscene(string strTrackName, int bFadeInOut, int bDisableInterface, int bHideInterface)
+int  GetPlayCutsceneFadeInDelay()
+int  StopCutscene()
+void FadeInCutscene(int nTicks, int nR, int nG, int nB)
+void FadeOutCutscene(int nTicks, int nR, int nG, int nB)
+void PlayBriefing(string pszAnimMeshID, string pszText, string strWave, int nBriefingScriptNum, int bModal)
+void AddBriefingDialog(string pszAnimMeshID, string pszTalkerName, string pszText, string strWave)
+void PlayBriefingDialog(int bAddToDialogsList, int nBriefingScriptNum, int bModal)
+void AddBriefingToList()
+void RegisterGoal(int nNr, string strText)
+void EnableGoal(int nNr, int bEnable)
+void EnableGoal(int nNr, int bEnable, int bNotify)
+int  IsGoalEnabled(int nNr)
+void SetGoalState(int iNr, int nState)
+void SetGoalState(int iNr, int nState, int bNotify)
+int  GetGoalState(int nNr)
+int  GetNumberOfEnabledGoals()
+void SetConsoleText(string strText)
+void SetConsoleText(string strText, int nTicks)
+void SetConsoleText(string strText, int nTicks, int bBreakStepAhead)
+void SetConsole2Text(string strText)
+void SetConsole2Text(string strText, int nTicks)
+void SetConsole2Text(string strText, int nTicks, int bBreakStepAhead)
+void SetLowConsoleText(string strText)
+void SetLowConsoleText(string strText, int nTicks)
+void SetLowConsoleText(string strText, int nTicks, int bBreakStepAhead)
+void EnableInterface(int bEnable)
+void ShowInterface(int bShow)
+void ShowInterface(int bShowInterface, int bShowIngameGraphics)
+void AddMapSign(int nGx, int nGy, int nSignNum, int nTicks)
+void RemoveMapSign(int nGx, int nGy)
+void PlayWave(string strWave)
+void PlayWave(string strWave, int nVolumeIndex, int nDelayTicks)
+void CacheWave(string strWave)
+void RemoveDelayedWaves()
+void PlayMusic(string strMusic, int bForceIfTurnOff)
+void PlayCutsceneMusic(string strMusic)
+unit CreateObject(string strObjectID, int nX, int nY, int nZ, int nAlpha)
+unit GetObject(int nX, int nY)
+unit GetObject(int nX, int nY, int bLand, int bAir)
+int  IsUnitNearPoint(int nGx, int nGy, int nGRange, int nIFFMask)
+int  IsObjectNearPoint(int nGx, int nGy, int nGRange, int nIFFMask, int nTargetType)
+void ResetFogInArea(int nGx, int nGy, int nGRange, int nForIFFMask)
+void ShowObjectsInArea(int nGx, int nGy, int nGRange, int nForIFFMask, int nShowIFFMask, int nShowObjectsType)
+void SetLimitedGameRect(int nLeft, int nTop, int nRight, int nBottom)
+void MultiplyPassiveResourcesSize(int nPercent)
+void MultiplyPassiveResourcesSize(int nResourceType, int nPercent)
+void SetWind(int nWindSpeed, int nWindDir)
+void SetRain(int nRainIntensity)
+void SetSnow(int nSnowIntensity)
+void AddAgentToHire(string pszAgentID, string strUnitID)
+void RemoveAgentFromHire(string strAgentID)
+int  IsAgentInHire(string strAgentID)
+int  IsAgentInHireBidded(string strAgentID)
+int  IsAgentInWorld(string strAgentID)
+int  IsAgentInWorld(unit uAgent)
+unit GetAgentInWorld(string strAgentID)
+unit GetAgentUnitInWorld(string strAgentID)
+int  GetAgentInWorldPlayerIFFNum(string strAgentID)
+void ClearSelection()
+int  GetSelectedObjectsCount()
+unit GetSelectedObject(int nNum)
+void SetBlinkCommandsDialogButton(int nCommand, int bSet)
+void SetBlinkScreenButtonsDialogButton(int nButtonNum, int bSet)
+int  IsCommandsDialogOpen()
+int  IsBuildingsDialogOpen()
+int  IsBuildDialogOpen()
+void ShowStatisticsDialog(int bSendEndEvent)
+void SetCameraFPPMode(int bSet)
+int  IsCameraFPPMode()
+void EnableMessages(int bEnable)
+void SetDrawAllObjects(int bSet)
+void MultiplyLiquidResourcesHarvestSpeed(int nPercent)
+void MultiplyLiquidResourcesHarvestSpeed(int nResourceType, int nPercent)
+int  GetWorldWidth()
+int  GetWorldHeight()
+void SetCameraFPPMode(int bSet, int bForceRemainInMode)
+<mission_functions_private_end>
+<mission_functions_end>
+</pre>
+<big>Commands</big>
+<pre>
+<mission_commands_begin>
+int  Initialize()
+int  Uninitialize()
+int  Combo1(int)
+int  Combo2(int)
+int  Combo3(int)
+int  Combo4(int)
+int  Combo5(int)
+int  Combo6(int)
+int  PlayerPointCommand1(int, unit, int, int)
+int  PlayerPointCommand2(int, unit, int, int)
+int  PlayerPointCommand3(int, unit, int, int)
+int  PlayerPointCommand4(int, unit, int, int)
+int  PlayerObjectCommand1(int, unit, unit)
+int  PlayerObjectCommand2(int, unit, unit)
+int  PlayerObjectCommand3(int, unit, unit)
+int  PlayerObjectCommand4(int, unit, unit)
+<mission_commands_end>
+</pre>
+<big>Events</big>
+<pre>
+<mission_events_begin>
+int  RemoveUnits()
+int  NotUseAgents()
+int  UseExtraSkirmishPlayers()
+int  SpecialLevelFlags()
+int  AIPlayerFlags()
+int  Artefact(int, unit)
+void AddedUnit(unit, int)
+void AddedBuilding(unit, int)
+void RemovedUnit(unit, unit, int)
+void RemovedBuilding(unit, unit, int)
+void PassiveDestroyed(unit, unit)
+void EndMission(int)
+void EscapeCutscene(int)
+void PreLoadGame()
+void DebugEndMission()
+void DebugCommand(string)
+void NewDynamicConnectionPlayer(int)
+void EndPlayBriefing(int, int, int)
+void EndStatisticsDialog(int)
+void InterfaceClickBlinkCommandsDialogButton(int)
+void InterfaceClickBlinkScreenButtonsDialogButton(int)
+void Timer0()
+void Timer1()
+void Timer2()
+void Timer3()
+void Timer4()
+void Timer5()
+void Timer6()
+void Timer7()
+void CustomEvent0(int, int, int, int)
+void CustomEvent1(int, int, int, int)
+void CustomEvent2(int, int, int, int)
+void CustomEvent3(int, int, int, int)
+void CustomEvent4(int, int, int, int)
+void CustomEvent5(int, int, int, int)
+void CustomEvent6(int, int, int, int)
+void CustomEvent7(int, int, int, int)
+void KilledNetworkPlayer(int)
+int  GetLocalSpecialCommandForTarget(int, unit, int, int, unit)
+<mission_events_end>
+</pre>
+<big>Enums</big>
+<pre>
+<mission_enums_begin>
+SetGoalState - nState, GetGoalState:
+  goalNotAchieved
+  goalAchieved
+  goalFailed
+Add/RemoveUnit/Building - nNotifyType:
+  eNotifyCreated
+  eNotifyKilled
+  eNotifyRemoved
+  eNotifyChangedPlayer
+PlayWave - nVolumeIndex:
+  volUnitTalk
+  volPlayerTalk
+  volFX
+  volTrack
+  volBriefing
+GetNumberOfBuildings - nBuildingType:
+  eBuildingNormal
+  eBuildingPowerPlant
+  eBuildingPowerAccelerator
+  eBuildingPowerTransmitter
+  eBuildingUnitsExit
+  eBuildingResourceRefinery
+  eBuildingMine
+  eBuildingObjectsFactory
+  eBuildingAmmoFactory
+  eBuildingResearchCenter
+  eBuildingSpecialWeapon
+  eBuildingWall
+  eBuildingSingleWall
+  eBuildingWallGate
+  eBuildingLaserWall
+  eBuildingBuildCopula
+  eBuildingWallCannon
+  eBuildingTeleport
+  eBuildingBadRaceBuilding
+SetBlinkScreenButtonsDialogButton - nButtonNum:
+  eButtonMenu
+  eButtonGoals
+  eButtonMoneyConfig
+  eButtonAllianceDialog
+  eButtonReplayCamera
+  eButtonConstructor
+  eButtonResearches
+  eButtonUpgradeBuildings
+  eButtonMap
+  eButtonBuildPanel
+  eButtonCommands
+  eButtonPIPCamera
+IsObjectNearPoint - nTargetType:
+  eTargetTypeVehicle
+  eTargetTypePlane
+  eTargetTypeInfantry
+  eTargetTypeBuilding
+  eTargetTypeAny
+  eTargetTypeLand
+  eTargetTypeAir
+  eTargetTypeDamagableOnly
+ShowObjectsInArea - nShowObjectsType:
+  eShowObjectsBuildings
+  eShowObjectsUnits
+  eShowObjectsPassives
+  eShowObjectsAll
+event GetLocalSpecialCommandForTarget:
+  eCommandPlayerPointCommand0
+  eCommandPlayerPointCommand1
+  eCommandPlayerPointCommand2
+  eCommandPlayerPointCommand3
+  eCommandPlayerObjectCommand0
+  eCommandPlayerObjectCommand1
+  eCommandPlayerObjectCommand2
+  eCommandPlayerObjectCommand3
+  eCursorInterfacePointer
+  eCursorScrollList
+  eCursorDragScroll
+  eCursorDragScrollBeg
+  eCursorTurnView
+  eCursorDragSelect
+  eCursorGamePointer
+  eCursorMove
+  eCursorStop
+  eCursorAttack
+  eCursorBuildPlace
+  eCursorSelect
+  eCursorEnterObject
+  eCursorSelfExitOneCrew
+  eCursorHarvestPassiveResource
+  eCursorHarvestLiquidResource
+  eCursorSetResourceRefinery
+  eCursorRepair
+  eCursorCapture
+  eCursorConnectLaserWall
+  eCursorDisconnectLaserWall
+  eCursorSetAirport
+  eCursorMoveCannonToWall
+  eCursorTeleportUnits
+  eCursorSetLaserUnitBaseBuilding
+  eCursorSetUnitsExitDestinationPoint
+  eCursorSetAgentCreatePoint
+  eCursorPutMineInPoint
+  eCursorPickUpMineFromPoint
+SetBlinkCommandsDialogButton - nCommand:
+  eCommandStop
+  eCommandMove
+  eCommandMoveDblClk
+  eCommandMoveXYZA
+  eCommandTurn
+  eCommandMoveFPPInDirection
+  eCommandTurnFPP
+  eCommandStopMovingFPP
+  eCommandEnterObject
+  eCommandAttack
+  eCommandAttackPoint
+  eCommandMoveAttack
+  eCommandMoveAttackDblClk
+  eCommandSetAttackMode
+  eCommandSetMovementMode
+  eCommandSetLightsMode
+  eCommandSetAccuracyMode
+  eCommandSetCamouflageMode
+  eCommandSetEntrenchmentMode
+  eCommandExitCrew
+  eCommandSetLandAirMode
+  eCommandSetEffectEnergyDisperseMode
+  eCommandReleaseAgentFromHire
+  eCommandSwitchAgentAI
+  eCommandShowHeroInventoryDialog
+  eCommandUseRegenerateInfantryHPMindFromInventory
+  eCommandUseRegenerateUnitHPFromInventory
+  eCommandUseRegenerateShieldFromInventory
+  eCommandSetUseRegenerateInfantryHPMindFromInventoryAutoMode
+  eCommandSetUseRegenerateUnitHPFromInventoryAutoMode
+  eCommandSetUseRegenerateShieldFromInventoryAutoMode
+  eCommandUseObjectFromInventory
+  eCommandMoveEquipmentToInventory
+  eCommandDropObjectFromInventory
+  eCommandDropEquipment
+  eCommandCloneUnit
+  eCommandTransformUnit
+  eCommandSetCrawlMode
+  eCommandMoveCrewInsideObject
+  eCommandBuildBuilding
+  eCommandRepair
+  eCommandHarvestPassiveResource
+  eCommandHarvestLiquidResource
+  eCommandSetResourceRefinery
+  eCommandAutoMoveToSupplyObject
+  eCommandCaptureObject
+  eCommandSetCaptureMode
+  eCommandSetAutoSelectHeroWeaponMode
+  eCommandPutMineInPoint
+  eCommandPutTimeMineInPoint
+  eCommandPickUpMineFromPoint
+  eCommandExplodeRemoteMineFromPoint
+  eCommandSetAirport
+  eCommandLaserAttack
+  eCommandSetLaserUnitBaseBuilding
+  eCommandExitTransportedCrew
+  eCommandSelfExitOneCrew
+  eCommandLandAndExitTransportedCrew
+  eCommandMoveAndLandToEnterTransportedCrew
+  eCommandCursorStop
+  eCommandCursorStopMove
+  eCommandBeginRecord
+  eCommandEndRecord
+  eCommandExecuteRecord
+  eCommandBeginQuickRecord
+  eCommandEndQuickRecord
+  eCommandRepeatExecution
+  eCommandAddObjectToProduction
+  eCommandRemoveObjectFromProduction
+  eCommandLoopObjectProduction
+  eCommandUpgradeCannon
+  eCommandCurrentCannon
+  eCommandCancelUpgradeCannon
+  eCommandCancelUpgradeCannons
+  eCommandSetTurnMode
+  eCommandSetHarvestResourceMode
+  eCommandBuildSpecialWeapon
+  eCommandCancelBuildSpecialWeapon
+  eCommandSpecialWeaponAttack
+  eCommandConnectLaserWall
+  eCommandDisconnectLaserWall
+  eCommandSetGateMode
+  eCommandMoveCannonToWall
+  eCommandTeleportUnits
+  eCommandFlyBuildingToNewLocation
+  eCommandSetUnitsExitDestinationPoint
+  eCommandSellBuilding
+<mission_enums_end>
+</pre>
+<a name="unit">
+<hr>
+<unit>
+<big><strong>unit</strong> object</big><br><br>
+<big>Functions</big>
+<pre>
+<unit_functions_begin>
+public:
+int  GetLandHeight(int nX, int nY)
+int  GetLocationX()
+int  GetLocationY()
+int  GetLocationZ()
+void GetLocation(int& pX, int& pY)
+void GetLocation(int& pX, int& pY, int& pZ)
+int  GetLocationGx()
+int  GetLocationGy()
+void GetLocationG(int& pGx, int& pGy)
+int  GetDirectionAlpha()
+unit GetUnitRef()
+int  GetIFF()
+int  GetIFFNum()
+int  GetAllianceIFF()
+int  GetNeutralIFF()
+int  GetEnemyIFF()
+int  IsAIPlayer()
+int  DistanceTo(int nX, int nY)
+int  DistanceTo(unit uTarget)
+int  DistanceToClosestGrid(unit uTarget)
+void GetClosestGridLocation(unit uTarget, int& pX, int& pY)
+int  IsPointInGameRect(int nX, int nY)
+int  AngleTo(int nX, int nY)
+int  AngleTo(unit uTarget)
+int  GetRelativeAngleTo(int nX, int nY)
+int  GetRelativeAngleTo(unit uTarget)
+int  GetAngleDiff(int nAngle)
+int  GetTargetDirectionDiff(unit uTarget)
+int  IsLive()
+int  IsStored()
+unit GetVisibleFakeObject()
+string GetObjectIDName()
+int  GetHP()
+int  GetMaxHP()
+int  IsUnit()
+int  IsBuilding()
+int  IsBuildingCopula()
+int  IsVisibleFake()
+int  IsInfantry()
+int  IsHero()
+int  IsAgent()
+int  IsVehicle()
+int  IsTransporter()
+int  IsLandMove()
+int  IsHelicopterMove()
+int  IsPlaneMove()
+int  IsHelicopterOrPlaneMove()
+int  IsImmobileUnit()
+int  IsAirObject()
+int  IsLandObject()
+int  IsTypeHelicopterWithLandMode()
+int  IsHelicopterOnLand()
+int  IsImmobileUnitOrCantMoveInCurrentState()
+int  IsUnitWorking()
+int  IsBuildingWorking()
+int  IsEnemy(unit uTarget)
+int  IsVisible(unit uTarget)
+int  IsMoving()
+int  IsMovingTurning()
+int  IsPreparingToMove()
+int  IsWaitingBeforeClosedGate()
+int  IsHelicopterLanding()
+int  IsExecutingMoveCrewInsideObjectCommand()
+int  IsExecutingMoveAndLandToEnterTransportedCrewCommand()
+int  HaveCannon()
+void GetMoveTarget(int& pX, int& pY)
+int  IsOutOfAmmo()
+int  RequiresAmmoSupply()
+int  HaveCrew()
+int  RequiresCrew()
+unit GetCrew()
+unit GetObjectContainingObject()
+unit GetStoredObject()
+unit GetAttackTarget()
+int  IsGoodPlaceOnLandForUnit(int nX, int nY)
+void CommandStop()
+void CommandMove(int, int)
+void CommandMoveDblClk(int, int)
+void CommandMoveXYZA(int, int, int, int)
+void CommandTurn(int)
+void CommandMoveFPPInDirection(int, int, int)
+void CommandTurnFPP(int)
+void CommandStopMovingFPP()
+void CommandEnterObject(unit)
+void CommandAttack(unit)
+void CommandAttackPoint(int, int)
+void CommandMoveAttack(int, int)
+void CommandMoveAttackDblClk(int, int)
+void CommandSetAttackMode(int)
+void CommandSetMovementMode(int)
+void CommandSetLightsMode(int)
+void CommandSetAccuracyMode(int)
+void CommandSetCamouflageMode(int)
+void CommandSetEntrenchmentMode(int)
+void CommandExitCrew()
+void CommandSetLandAirMode(int)
+void CommandSetEffectEnergyDisperseMode(int)
+void CommandReleaseAgentFromHire()
+void CommandSwitchAgentAI()
+void CommandShowHeroInventoryDialog()
+void CommandUseRegenerateInfantryHPMindFromInventory()
+void CommandUseRegenerateUnitHPFromInventory()
+void CommandUseRegenerateShieldFromInventory()
+void CommandSetUseRegenerateInfantryHPMindFromInventoryAutoMode(int)
+void CommandSetUseRegenerateUnitHPFromInventoryAutoMode(int)
+void CommandSetUseRegenerateShieldFromInventoryAutoMode(int)
+void CommandUseObjectFromInventory(string)
+void CommandMoveEquipmentToInventory(string)
+void CommandDropObjectFromInventory(string)
+void CommandDropEquipment(string)
+void CommandCloneUnit()
+void CommandTransformUnit(string)
+void CommandSetCrawlMode(int)
+void CommandMoveCrewInsideObject(unit)
+void CommandBuildBuilding(int, int, int, string)
+void CommandRepair(unit)
+void CommandHarvestPassiveResource(unit)
+void CommandHarvestLiquidResource(int, int)
+void CommandSetResourceRefinery(unit)
+void CommandCaptureObject(unit)
+void CommandSetCaptureMode(int)
+void CommandSetAutoSelectHeroWeaponMode(int)
+void CommandPutMineInPoint(int, int, int, string)
+void CommandPutTimeMineInPoint(int, int, int, string)
+void CommandPickUpMineFromPoint(int, int)
+void CommandExplodeRemoteMineFromPoint(int, int)
+void CommandSetAirport(unit)
+void CommandLaserAttack(int, int, int, int)
+void CommandSetLaserUnitBaseBuilding(unit)
+void CommandExitTransportedCrew()
+void CommandSelfExitOneCrew(unit)
+void CommandLandAndExitTransportedCrew(int, int)
+void CommandMoveAndLandToEnterTransportedCrew(unit)
+void CommandUserNoParam0()
+void CommandUserNoParam1()
+void CommandUserNoParam2()
+void CommandUserNoParam3()
+void CommandUserNoParam4()
+void CommandUserNoParam5()
+void CommandUserNoParam6()
+void CommandUserNoParam7()
+void CommandUserNoParam8()
+void CommandUserNoParam9()
+void CommandUserOneParam0(int)
+void CommandUserOneParam1(int)
+void CommandUserOneParam2(int)
+void CommandUserOneParam3(int)
+void CommandUserOneParam4(int)
+void CommandUserOneParam5(int)
+void CommandUserOneParam6(int)
+void CommandUserOneParam7(int)
+void CommandUserOneParam8(int)
+void CommandUserOneParam9(int)
+void CommandUserObject0(unit)
+void CommandUserObject1(unit)
+void CommandUserObject2(unit)
+void CommandUserObject3(unit)
+void CommandUserObject4(unit)
+void CommandUserObject5(unit)
+void CommandUserObject6(unit)
+void CommandUserObject7(unit)
+void CommandUserObject8(unit)
+void CommandUserObject9(unit)
+void CommandUserPoint0(int, int)
+void CommandUserPoint1(int, int)
+void CommandUserPoint2(int, int)
+void CommandUserPoint3(int, int)
+void CommandUserPoint4(int, int)
+void CommandUserPoint5(int, int)
+void CommandUserPoint6(int, int)
+void CommandUserPoint7(int, int)
+void CommandUserPoint8(int, int)
+void CommandUserPoint9(int, int)
+void CommandBeginRecord()
+void CommandEndRecord()
+void CommandExecuteRecord()
+void CommandBeginQuickRecord()
+void CommandEndQuickRecord()
+void CommandRepeatExecution()
+void CommandSetTurnMode(int)
+void CommandSetHarvestResourceMode(int)
+void CommandConnectLaserWall(unit)
+void CommandDisconnectLaserWall(unit)
+void CommandSetGateMode(int)
+void CommandMoveCannonToWall(unit)
+void CommandFlyBuildingToNewLocation(int, int, int)
+void CommandSetUnitsExitDestinationPoint(int, int)
+void CommandSellBuilding()
+void SetImmediatePosition(int nX, int nY, int nZ, int nAlpha, int bSetIfNotFree)
+void SetImmediateAngle(int nAlpha)
+void KillObject()
+void RemoveObject()
+void InitArtefactScriptID(int nID)
+void SetPlayer(player pPlayer)
+int  AddObjectToHeroInventory(string strObjectID, int bIgnoreInventorySize)
+int  RemoveObjectFromHeroInventory(string strObjectID, int bRemoveSubObject)
+int  GetObjectCountInHeroInventory(string strObjectID, int bCountSubObjects)
+void ActivateMine(int nByIFFNum)
+void ActivateMine(int nByIFFNum, int nExplodeTicks)
+void ExplodeMine()
+int  GetResource(int nResNum)
+int  GetResource(int& pRes0, int& pRes1, int& pRes2)
+void SetImmediateHelicopterLandMode(int bLand)
+void RemoveCrew()
+unit CreateCrew(string strObjectID)
+unit CreateTransportedCrew(string strObjectID)
+int  IsSelected()
+void SetSelected(int bSelect)
+int  GetGroupNum()
+void SetGroupNum(int nGroupNum)
+void SetExperienceLevel(int nLevel)
+int  GetExperienceLevel()
+int  GetExperiencePoints()
+void AddExperiencePoints(int nPoints)
+int  IsVisibleForPlayer(player pPlayer)
+int  IsVisibleForPlayer(int nIFF)
+int  GetWorldWidth()
+int  GetWorldHeight()
+void LoadScript(string strScriptFile)
+void SetScriptData(int nIndex, int nData)
+int  GetScriptData(int nIndex)
+void InitVisible(int nIFF)
+<unit_functions_public_end>
+private:
+void CallMoveToPoint(int nX, int nY)
+void CallMoveToPoint(int nX, int nY, int nAlpha)
+void CallStopMoving()
+void CallTurnToAngle(int nAngle)
+void CallMoveInsideObject(unit uEntrance)
+void CallHelicopterLand()
+void CallHelicopterLand(int nAlpha)
+void CallHelicopterSetHeight(int nZ)
+void CallHelicopterSetHeight(int nZ, int nAngle)
+void CallHelicopterRaise()
+void CallHelicopterFlyToPoint(int nX, int nY, int nZ)
+void CallHelicopterFlyToPoint(int nX, int nY, int nZ, int nAngle)
+void CallBeginEntrenchmentMode()
+void CallEndEntrenchmentMode()
+void CallExitCrew()
+void CallCloneUnit()
+void CallTransformUnit(int dwTransformToID)
+void EndCommand(int bResult)
+void ChangedCommandState()
+void SetStateDelay(int nDelay)
+int  GetStateDelay()
+void SetState(int nState)
+void SetState(int nState, int nDelay)
+void SetTimer(int nTimerTicks)
+int  IsBeginningEntrenchmentMode()
+int  IsEndingEntrenchmentMode()
+int  IsExitCrew()
+int  IsMovingInsideObject()
+int  IsClonningUnit()
+int  IsTransformingUnit()
+int  CanHelicopterLandInCurrPos()
+int  GetCannonType()
+int  CanAttackLand()
+int  CanAttackAir()
+int  CanAttackInCurrentState()
+int  HaveCannonAndCanAttackInCurrentState()
+int  GetTargetPriorities()
+int  HaveFlatShootCannon()
+int  GetRangeOfFire()
+int  IsTargetInRange(unit uTarget, int bAllowOtherTarget)
+int  IsPointInRange(int nX, int nY)
+void AttackTarget(unit uTarget, int nShootCount, int bReturnFireFromHit)
+void AttackPoint(int nX, int nY, int nShootCount)
+void StopAttack()
+void StopNotAutoAttack()
+int  FindTargets(int nTargetType, int nTargetIFF, int nTargetPriorities, int nSortType, int bReverseSort)
+int  GetFoundTargetsCount()
+unit GetFoundTarget(int nIndex)
+void ClearFoundTargetsArray()
+int  WasAnyEnemyInLastFindTargets()
+void SetCheckAnyEnemyInLastStepVisibility(int bSet)
+int  WasAnyEnemyInLastStepVisibility()
+void SetCheckAnyAllyHitInLastStepVisibility(int bSet)
+int  WasAnyAllyHitInLastStepVisibility()
+int  GetTargetPriority(unit uTarget, int nTargetPriorities)
+int  CalcMaxTargetPriority(int nTargetPriorities)
+int  GetCannonAngleToPoint(int nX, int nY)
+int  GetCannonAngleToTarget(unit uTarget)
+void SetArmedState(int bSet)
+void SetLightsMode(int nMode)
+void SetCamouflageMode(int bSet)
+void SetAccuracyMode(int bSet)
+void SetEffectEnergyDisperseMode(int bSet)
+int  ReleaseAgentFromHire()
+int  SwitchAgentAI()
+void UseRegenerateInfantryHPMindFromInventory()
+void UseRegenerateUnitHPFromInventory()
+void UseRegenerateShieldFromInventory()
+void SetUseRegenerateInfantryHPMindFromInventoryAutoMode(int nMode)
+void SetUseRegenerateUnitHPFromInventoryAutoMode(int nMode)
+void SetUseRegenerateShieldFromInventoryAutoMode(int nMode)
+void UseObjectFromInventory(int dwObjectID)
+void MoveEquipmentToInventory(int dwSubObjectID)
+void DropObjectFromInventory(int dwObjectID)
+void DropEquipment(int dwSubObjectID)
+void AutoSelectBestHeroWeaponForTarget(unit uTarget)
+void AutoSelectBestHeroWeaponForTarget(int nX, int nY)
+int  IsEntrenchmentModeUnit()
+int  IsCamouflageModeUnit()
+int  IsAccuracyModeUnit()
+int  IsCrawlModeUnit()
+int  IsLandAndHelicopterModeUnit()
+void CheckAttackMusicForTarget(unit uTarget)
+void SetCannonsAutoFire(int bAutoFire)
+int  CanDamageObject(unit uTarget)
+void SetAttackTarget(unit uTarget)
+int  CanEnterObject(unit uTarget)
+void GetEnterObjectMoveToPos(unit uTarget, int& pX, int& pY, int& pZ)
+int  RemoveLandUnitsFromPoint(int nX, int nY)
+int  CanCloneUnit()
+int  CanTransformUnit(int dwTransformToID)
+void SetTransformToID(int dwTransformToID)
+int  GetTransformToID()
+void SetCanBeWithdraw(int bSet)
+int  GetWorldTick()
+int  FindGoodPlaceToCloneUnit(int& pX, int& pY)
+int  FindGoodPlaceToTransformUnit(int dwTransformToID, int& pX, int& pY)
+int  IsInGoodPlaceToCloneUnit()
+int  IsInGoodPlaceToTransformUnit(int dwTransformToID)
+<unit_functions_private_end>
+<unit_functions_end>
+</pre>
+<big>Commands</big>
+<pre>
+<unit_commands_begin>
+int  Initialize()
+int  Uninitialize()
+int  Stop()
+int  Move(int, int)
+int  MoveDblClk(int, int)
+int  MoveXYZA(int, int, int, int)
+int  Turn(int)
+int  MoveFPPInDirection(int, int, int)
+int  TurnFPP(int)
+int  StopMovingFPP()
+int  EnterObject(unit)
+int  Attack(unit)
+int  AttackPoint(int, int)
+int  MoveAttack(int, int)
+int  MoveAttackDblClk(int, int)
+int  SetAttackMode(int)
+int  SetMovementMode(int)
+int  SetLightsMode(int)
+int  SetAccuracyMode(int)
+int  SetCamouflageMode(int)
+int  SetEntrenchmentMode(int)
+int  ExitCrew()
+int  SetLandAirMode(int)
+int  SetEffectEnergyDisperseMode(int)
+int  ReleaseAgentFromHire()
+int  SwitchAgentAI()
+int  ShowHeroInventoryDialog()
+int  UseRegenerateInfantryHPMindFromInventory()
+int  UseRegenerateUnitHPFromInventory()
+int  UseRegenerateShieldFromInventory()
+int  SetUseRegenerateInfantryHPMindFromInventoryAutoMode(int)
+int  SetUseRegenerateUnitHPFromInventoryAutoMode(int)
+int  SetUseRegenerateShieldFromInventoryAutoMode(int)
+int  UseObjectFromInventory(int)
+int  MoveEquipmentToInventory(int)
+int  DropObjectFromInventory(int)
+int  DropEquipment(int)
+int  CloneUnit()
+int  TransformUnit(int)
+int  SetCrawlMode(int)
+int  MoveCrewInsideObject(unit)
+int  BuildBuilding(int, int, int, int)
+int  Repair(unit)
+int  HarvestPassiveResource(unit)
+int  HarvestLiquidResource(int, int)
+int  SetResourceRefinery(unit)
+int  AutoMoveToSupplyObject(unit)
+int  CaptureObject(unit)
+int  SetCaptureMode(int)
+int  SetAutoSelectHeroWeaponMode(int)
+int  PutMineInPoint(int, int, int, int)
+int  PutTimeMineInPoint(int, int, int, int)
+int  PickUpMineFromPoint(int, int)
+int  ExplodeRemoteMineFromPoint(int, int)
+int  SetAirport(unit)
+int  LaserAttack(int, int, int, int)
+int  SetLaserUnitBaseBuilding(unit)
+int  ExitTransportedCrew()
+int  SelfExitOneCrew(unit)
+int  LandAndExitTransportedCrew(int, int)
+int  MoveAndLandToEnterTransportedCrew(unit)
+int  Reserved0()
+int  Reserved1()
+int  Reserved2()
+int  Reserved3()
+int  Reserved4()
+int  Reserved5()
+int  Reserved6()
+int  Reserved7()
+int  Reserved8()
+int  Reserved9()
+int  UserNoParam0()
+int  UserNoParam1()
+int  UserNoParam2()
+int  UserNoParam3()
+int  UserNoParam4()
+int  UserNoParam5()
+int  UserNoParam6()
+int  UserNoParam7()
+int  UserNoParam8()
+int  UserNoParam9()
+int  UserOneParam0(int)
+int  UserOneParam1(int)
+int  UserOneParam2(int)
+int  UserOneParam3(int)
+int  UserOneParam4(int)
+int  UserOneParam5(int)
+int  UserOneParam6(int)
+int  UserOneParam7(int)
+int  UserOneParam8(int)
+int  UserOneParam9(int)
+int  UserObject0(unit)
+int  UserObject1(unit)
+int  UserObject2(unit)
+int  UserObject3(unit)
+int  UserObject4(unit)
+int  UserObject5(unit)
+int  UserObject6(unit)
+int  UserObject7(unit)
+int  UserObject8(unit)
+int  UserObject9(unit)
+int  UserPoint0(int, int)
+int  UserPoint1(int, int)
+int  UserPoint2(int, int)
+int  UserPoint3(int, int)
+int  UserPoint4(int, int)
+int  UserPoint5(int, int)
+int  UserPoint6(int, int)
+int  UserPoint7(int, int)
+int  UserPoint8(int, int)
+int  UserPoint9(int, int)
+int  CommandXXX()
+<unit_commands_end>
+</pre>
+<big>Events</big>
+<pre>
+<unit_events_begin>
+void OnHit(unit)
+void Timer()
+int  CanAutoSupply()
+void OnSetUnitMoveType()
+int  IsMovingOrPuttingToRefinery(unit, int)
+<unit_events_end>
+</pre>
+<big>Enums</big>
+<pre>
+<unit_enums_begin>
+IsTargetInRange, IsPointInRange:
+  eNotInRange
+  eInRangeTooClose
+  eInRangeBadHit
+  eInRangeBadAngleBeta
+  eInRangeBadAngleAlpha
+  eInRangeGoodHit
+GetCannonType:
+  eBulletImmediate
+  eBullet
+  eRocket
+  eGuidedRocket
+  eBallistic
+  eBomb
+  eLaser
+  eBeam
+  eFlare
+  eAntyMissileLaser
+FindTargets - nTargetType:
+  eTargetTypeVehicle
+  eTargetTypePlane
+  eTargetTypeInfantry
+  eTargetTypeBuilding
+  eTargetTypeAny
+  eTargetTypeLand
+  eTargetTypeAir
+  eTargetTypeDamagableOnly
+FindTargets - nTargetPriorities:
+  ePriorVehicleMask
+  ePriorVehicleShift
+  ePriorInfantryMask
+  ePriorInfantryShift
+  ePriorBuildingMask
+  ePriorBuildingShift
+  ePriorWallMask
+  ePriorWallShift
+  ePriorLandMask
+  ePriorLandShift
+  ePriorAirMask
+  ePriorAirShift
+FindTargets - nSortType:
+  eSortTypeRange
+  eSortTypeHP
+  eSortTypeHPPercent
+  eSortTypeHitsToKill
+<unit_enums_end>
+</pre>
+<a name="infantry">
+<hr>
+<infantry>
+<big><strong>infantry</strong> object</big><br><br>
+<big>Functions</big>
+<pre>
+<infantry_functions_begin>
+private:
+void CallBeginCrawlMode()
+void CallEndCrawlMode(int bForceEnd)
+void CallSetLandToAirMode()
+void CallSetCrawlToAirMode()
+void CallSetAirToLandMode()
+void CallAttackTarget(unit uTarget, int nShootCount)
+void CallAttackPoint(int nX, int nY, int nShootCount)
+void CallStopAttack()
+void CallMoveCrewInsideObject(unit uTarget)
+int  IsBeginningCrawlMode()
+int  IsEndingCrawlMode()
+int  IsSettingLandToAirMode()
+int  IsSettingAirToLandMode()
+int  IsAttacking()
+int  IsInAttackingAnimFrame()
+int  IsEnteringObject()
+int  CanMoveCrewInsideObject(unit uTarget)
+int  FindFreePlaceToMoveCrewInsideObject(unit uTarget, int& pX, int& pY)
+int  IsInGoodPlaceToMoveCrewInsideObject(unit uTarget)
+int  IsObjectGoingToLand(unit uTarget)
+int  IsCrawlModeCommandWithEndCommand()
+<infantry_functions_private_end>
+<infantry_functions_end>
+</pre>
+<a name="hacker">
+<hr>
+<hacker>
+<big><strong>hacker</strong> object</big><br><br>
+<big>Functions</big>
+<pre>
+<hacker_functions_begin>
+private:
+void CallCaptureObject(unit uTarget)
+int  IsCapturing()
+int  CanCaptureObject(unit uTarget)
+int  GetCaptureRange()
+int  IsObjectInCaptureRange(unit uTarget)
+unit FindClosestObjectToCapture(int bInCaptureRange)
+void SetCaptureTarget(unit uTarget)
+<hacker_functions_private_end>
+<hacker_functions_end>
+</pre>
+<a name="hero">
+<hr>
+<hero>
+<big><strong>hero</strong> object</big><br><br>
+<big>Functions</big>
+<pre>
+<hero_functions_begin>
+private:
+void CallPutMineInPoint(int nX, int nY)
+void CallPickUpMineFromPoint(int nX, int nY)
+int  IsPuttingMine()
+int  IsPickingUpMine()
+void SetAutoSelectHeroWeaponMode(int nMode)
+int  CanPutMineInPoint(int nX, int nY, int dwMineID)
+int  CanPutMineInPoint(int nX, int nY)
+int  IsInGoodPlaceToPutMineInPoint(int nX, int nY)
+int  FindPlaceToPutMineInPoint(int nX, int nY, int& pX, int& pY)
+void SetPutMineID(int dwMineID)
+int  CanPickUpMineFromPoint(int nX, int nY)
+int  IsInGoodPlaceToPickUpMineFromPoint(int nX, int nY)
+int  FindPlaceToPickUpMineFromPoint(int nX, int nY, int& pX, int& pY)
+int  CanExplodeRemoteMineFromPoint(int nX, int nY)
+void ExplodeRemoteMineFromPoint(int nX, int nY)
+<hero_functions_private_end>
+<hero_functions_end>
+</pre>
+<a name="buildrobot">
+<hr>
+<buildrobot>
+<big><strong>buildrobot</strong> object</big><br><br>
+<big>Functions</big>
+<pre>
+<buildrobot_functions_begin>
+private:
+void CallStartBuildBuilding()
+void CallStopWork()
+int  IsStartingBuildBuilding()
+void SetBuildBuildingTarget(int nX, int nY, int nAlpha, int dwObjectID)
+void FindPositionToBuildBuilding(int& pBuildPosX, int& pBuildPosY, int& pBuildPosZ)
+int  GetAngleToBuildBuilding()
+int  IsInGoodPlaceToStartBuild()
+int  CanBuildBuildings()
+int  CanRepair()
+void CallRepair(unit uTarget)
+int  IsRepairing()
+int  CanRepairObject(unit uTarget)
+void FindPositionToRepair(unit uTarget, int& pPosX, int& pPosY, int& pPosZ)
+int  IsInGoodPlaceToRepair(unit uTarget)
+unit FindClosestObjectToRepair(int nFromX, int nFromY)
+void SetRepairTarget(unit uTarget)
+int  GetMaxAutoRepairRange()
+<buildrobot_functions_private_end>
+<buildrobot_functions_end>
+</pre>
+<a name="harvester">
+<hr>
+<harvester>
+<big><strong>harvester</strong> object</big><br><br>
+<big>Functions</big>
+<pre>
+<harvester_functions_begin>
+private:
+void CallHarvestPassiveResource(unit uResource)
+void CallHarvestLiquidResource(int nX, int nY)
+void CallStopHarvest()
+void CallPutResourceToRefinery(unit uRefinery)
+int  IsHarvesting()
+int  IsPuttingResourceToRefinery()
+int  CanHarvestPassiveResource(unit uResource)
+int  IsInGoodPlaceToHarvest(unit uResource)
+int  GetAngleToResource(unit uResource)
+void FindPositionToHarvestPassiveResource(unit uResource, int& pX, int& pY)
+int  MustLandNearResource()
+int  GetAirHarvestHeight(unit uResource)
+int  MustTransportResourceToRefinery()
+int  HaveFullResources()
+int  HaveAnyResource()
+int  GetResourcesSizePercent()
+int  IsInGoodPlaceToPutResourceToRefinery(unit uRefinery)
+int  CanTransportResourceToRefinery(unit uRefinery)
+void GetRefineryTransportResourcePos(unit uRefinery, int& pX, int& pY, int& pZ, int& pAlpha)
+unit FindClosestResourceRefinery()
+unit FindNextPassiveResource(unit uPrevResource, int nPrefferedType)
+int  CanHarvestLiquidResource(int nX, int nY)
+int  FindLiquidNearBank(int& pX, int& pY)
+void FindPositionToHarvestLiquidResource(int nLiquidX, int nLiquidY, int& pX, int& pY)
+int  FindLiquidResource(int nPrefferedType, int& pX, int& pY)
+int  FindLiquidResource(int nPrefferedType, int nFromX, int nFromY, int& pX, int& pY)
+int  GetAngleToLiquidResource(int nLiquidX, int nLiquidY)
+int  GetAirLiquidHarvestHeight(int nLiquidX, int nLiquidY)
+int  IsInGoodPlaceToHarvest(int nLiquidX, int nLiquidY)
+int  GetResourceType(unit uResource)
+int  GetResourceType(int nLiquidX, int nLiquidY)
+void SetHarvestSource(int nLiquidX, int nLiquidY)
+int  GetHarvestSource(int& pLiquidX, int& pLiquidY)
+void SetHarvestSource(unit uSource)
+unit GetHarvestSource()
+void SetHarvestDestination(unit uDestination)
+unit GetHarvestDestination()
+int  IsOtherHarvesterHarvestResource(unit uResource)
+int  IsOtherHarvesterHarvestResource(int nX, int nY)
+int  CanPutAnyResourceToRefinery(unit uRefinery)
+int  CanPutAnyResourceToRefinery()
+int  CanResetOtherResources(unit uResource)
+int  CanResetOtherResources(int nX, int nY)
+unit FindFreeRefinery(unit uRefinery)
+int  IsOtherHarvesterPuttingResourceToRefinery(unit uRefinery)
+<harvester_functions_private_end>
+<harvester_functions_end>
+</pre>
+<a name="supplier">
+<hr>
+<supplier>
+<big><strong>supplier</strong> object</big><br><br>
+<big>Functions</big>
+<pre>
+<supplier_functions_begin>
+private:
+unit FindObjectToSupply()
+void SetObjectToSupply(unit uSupplyObject)
+<supplier_functions_private_end>
+<supplier_functions_end>
+</pre>
+<a name="plane">
+<hr>
+<plane>
+<big><strong>plane</strong> object</big><br><br>
+<big>Functions</big>
+<pre>
+<plane_functions_begin>
+private:
+int  HaveAirport()
+unit GetAirport()
+int  GetAirportSlotPos(int& pX, int& pY, int& pZ)
+int  IsInAirportSlotPos()
+int  SetPlaneAirport(unit uAirport)
+int  MustBackToAirportForRefuel()
+int  HaveEnoughFuelToExecuteCommands()
+void SetAllowPlaneStop(int bSet)
+<plane_functions_private_end>
+<plane_functions_end>
+</pre>
+<a name="laserunit">
+<hr>
+<laserunit>
+<big><strong>laserunit</strong> object</big><br><br>
+<big>Functions</big>
+<pre>
+<laserunit_functions_begin>
+private:
+void CallMakeLaserAttack(int nToX, int nToY)
+int  IsMakingLaserAttack()
+int  HaveBaseBuilding()
+unit GetBaseBuilding()
+int  GetBaseBuildingSlotPos(int& pX, int& pY, int& pZ, int& pAlpha)
+int  IsInBaseBuildingSlotPos()
+int  IsLaserLoaded()
+int  CanMakeLaserAttack(int nFromX, int nFromY, int nToX, int nToY)
+int  CanSetLaserUnitBaseBuilding(unit uBuilding)
+int  SetLaserUnitBaseBuilding(unit uBuilding)
+void CloseLaserUnitBaseBuilding()
+int  PrepareOpenLaserUnitBaseBuilding()
+<laserunit_functions_private_end>
+<laserunit_functions_end>
+</pre>
+<a name="transporter">
+<hr>
+<transporter>
+<big><strong>transporter</strong> object</big><br><br>
+<big>Functions</big>
+<pre>
+<transporter_functions_begin>
+private:
+void CallExitTransportedCrew()
+void CallExitOneTransportedCrew()
+int  IsExitTransporterCrew()
+int  IsExitOneTransporterCrew()
+int  HaveTransportedCrew()
+<transporter_functions_private_end>
+<transporter_functions_end>
+</pre>
+<objects_end>
+<hr>
+<small><i>EarthC documentation generated automatically [2005-07-22]</i></small>
+</body>
+</html>

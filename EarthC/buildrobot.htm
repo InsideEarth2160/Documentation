@@ -1,0 +1,38 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1250">
+<title> buildrobot object </title>
+</head>
+<body>
+<a name="buildrobot">
+<hr>
+<buildrobot>
+<big><strong>buildrobot</strong> object</big><br><br>
+<big>Functions</big>
+<pre>
+<buildrobot_functions_begin>
+private:
+void CallStartBuildBuilding()
+void CallStopWork()
+int  IsStartingBuildBuilding()
+void SetBuildBuildingTarget(int nX, int nY, int nAlpha, int dwObjectID)
+void FindPositionToBuildBuilding(int& pBuildPosX, int& pBuildPosY, int& pBuildPosZ)
+int  GetAngleToBuildBuilding()
+int  IsInGoodPlaceToStartBuild()
+int  CanBuildBuildings()
+int  CanRepair()
+void CallRepair(unit uTarget)
+int  IsRepairing()
+int  CanRepairObject(unit uTarget)
+void FindPositionToRepair(unit uTarget, int& pPosX, int& pPosY, int& pPosZ)
+int  IsInGoodPlaceToRepair(unit uTarget)
+unit FindClosestObjectToRepair(int nFromX, int nFromY)
+void SetRepairTarget(unit uTarget)
+int  GetMaxAutoRepairRange()
+<buildrobot_functions_private_end>
+<buildrobot_functions_end>
+</pre>
+<hr>
+<small><i>EarthC documentation generated automatically [2005-07-22]</i></small>
+</body>
+</html>

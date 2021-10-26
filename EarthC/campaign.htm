@@ -1,0 +1,66 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1250">
+<title> campaign object </title>
+</head>
+<body>
+<a name="campaign">
+<hr>
+<campaign>
+<big><strong>campaign</strong> object</big><br><br>
+<big>Functions</big>
+<pre>
+<campaign_functions_begin>
+private:
+void CreateGamePlayer(int nIFFNum, int nSideColor, int nRace, int bLocalPlayer)
+void SetLoadMissionsCount(int nCount)
+void LoadMission(string pszLevel, string strScript, int nWorldNum)
+void SetActiveWorld(int nWorldNum)
+void EndMission(int nWorldNum, int nResult)
+void EnableWorld(int nWorldNum, int bEnable)
+void EndGame()
+void ShowChooseMissionDialog()
+void AddMissionToChooseDialog(string pszMissionName, string pszMissionDescription, string strMissionMesh, int nMeshViewParamsIndex)
+void SetTimer(int nTimer, int nInterval)
+void SetTimerDelay(int nTimer, int nDelay)
+<campaign_functions_private_end>
+<campaign_functions_end>
+</pre>
+<big>Commands</big>
+<pre>
+<campaign_commands_begin>
+int  Initialize()
+int  Uninitialize()
+int  DifficultyLevel(int)
+int  RequiredCampaigns()
+<campaign_commands_end>
+</pre>
+<big>Events</big>
+<pre>
+<campaign_events_begin>
+void EndingMission(int, int)
+void EndMission(int, int)
+void ChooseMission(int)
+int  GetDifficultyLevel()
+void Timer0()
+void Timer1()
+void Timer2()
+void Timer3()
+void Timer4()
+void Timer5()
+void Timer6()
+void Timer7()
+void CustomEvent0(int, int, int, int)
+void CustomEvent1(int, int, int, int)
+void CustomEvent2(int, int, int, int)
+void CustomEvent3(int, int, int, int)
+void CustomEvent4(int, int, int, int)
+void CustomEvent5(int, int, int, int)
+void CustomEvent6(int, int, int, int)
+void CustomEvent7(int, int, int, int)
+<campaign_events_end>
+</pre>
+<hr>
+<small><i>EarthC documentation generated automatically [2005-07-22]</i></small>
+</body>
+</html>
