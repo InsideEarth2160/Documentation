@@ -3,10 +3,10 @@
 
 ## Live Sites
 * [Earth-C](https://insideearth2160.github.io/Documentation/EarthC/)
-* Gametype Tutorial
-** [Tutorial](https://insideearth2160.github.io/Documentation/GameType_Tutorial/tutorial.html)
-** [Setupl](https://insideearth2160.github.io/Documentation/GameType_Tutorial/setup.html)
-** [Overview Language](https://insideearth2160.github.io/Documentation/GameType_Tutorial/overview_language.html)
+* **Gametype Tutorial**
+- [Tutorial](https://insideearth2160.github.io/Documentation/GameType_Tutorial/tutorial.html)
+- [Setupl](https://insideearth2160.github.io/Documentation/GameType_Tutorial/setup.html)
+- [Overview Language](https://insideearth2160.github.io/Documentation/GameType_Tutorial/overview_language.html)
 
 ## Contributing
 
