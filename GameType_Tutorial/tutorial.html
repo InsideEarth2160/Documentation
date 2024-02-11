@@ -1,0 +1,1028 @@
+<html>
+
+<head>
+<title>EarthC Einführung - Tutorial</title>
+<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+
+<h1>EarthC - Tutorial</h1>
+
+<br>
+
+<h2>Das Ziel</h2>
+<p>Gleich als Warnung vorweg, wie diese ganze Übersicht über EarthC ist auch dieses
+Tutorial nicht als Programmier-Tutorial gedacht, sondern geht davon aus, dass ihr 
+grundsätzlich programmieren könnt. Ihr solltet außerdem den Überblick über EarthC
+zumindest schon mal überflogen haben und evtl. während des Tutorials im Auge behalten,
+weil ich die Spracheigenschaften von EarthC hier nicht nochmals erklären werden. 
+Vielmehr möchte ich euch anhand eines praktischen Beispiels zeigen, wie man mit EarthC
+arbeitet. </p>
+<p>
+So ziemlich am interessantesten an EarthC sind Missions- und Gametype-Skripte. Ich 
+möchte euch daher zeigen, wie man ein Gametype-Skript bastelt, und um kein grundlegend
+neues Spielprinzip zu entwerfen, werden wir einen der Standard-Gametypes neu schreiben
+und um nützliche Features erweitern. Genauer gesagt werden wir uns den "Gebäude
+zerstören"-Gametype vornehmen. Wir werden ihn aber komplett neu schreiben, 
+übersichtlicher und vielleicht auch etwas eleganter als das Original, und wir werden
+einige Features dazutun, die für Multiplayer sehr nützlich sind. Da sich unsere
+Version des Gametypes auch auf den "professionellen" Multiplayer konzentrieren soll,
+werden wir dafür einige Features des normalen "Gebäude zerstören" verwerfen. Virtual
+Agents brauchen wir z. B. nicht, die sind ohnehin sehr kompliziert und mühsam zu
+integrieren. Auch die Möglichkeit, mit von der Map vorgegebenen Startbedingungen zu
+spielen, brauchen wir nicht. Die Option "Alliierter Sieg" in ihrer momentanen Form
+brauchen wir auch nicht mehr. Wir haben also sämtliche der begrenzten Optionsslots
+frei (maximal 4) und können diese neu füllen. Was wir stattdessen implementieren 
+werden, ist eine Option für feste Teams (von 1v1 bis 4v4) sowie eine 
+Zuschauerfunktion vom Start an. Wir werden das Skript so einstellen, dass es die Resultate
+grundsätzlich nie ans EarthNet sendet - die aktuellen Statistiken sind ohnehin für die Katz
+und müssen von uns nicht noch unterstützt werden. Und schließlich
+fügen wir noch ein kleines Gimmick ein: Eine optionale Ingame-Uhr, die dazugeschaltet
+werden kann oder nicht. Optional deshalb, weil sie die Vorspulfunktion von Earth
+weitestgehend ruiniert, was in Replays unter Umständen hinderlich sein kann 
+(obwohl es für Replays eine bessere Alternative gibt: Schnellerer
+Ablauf mit dem "Cheat" GameRate). </p>
+
+<br>
+
+<h2>Die Grundfunktionalitäten</h2>
+
+<h3>Das Grundgerüst</h3>
+<p>Im Folgenden präsentiere ich das (fast) minimale Grundgerüst eines Gametype-
+Skriptes, von dem auch wir ausgehen werden, um es nach und nach mit Funktionalität
+zu füllen:</p>
+<pre>
+mission "Adv. Structures"
+{
+  // ** State-Deklarationen **
+  
+  state Initialize;
+  state Nothing;
+  
+  
+  
+  // ** State-Implementationen **
+  
+  state Initialize
+  {
+    // Initialisierungsphase:
+    // 1. alle nötigen Variablen initialisieren
+    // 2. Startbedingungen für alle Spieler einstellen
+    
+    
+    // Initialisierung abgeschlossen, neuer State Nothing
+    return Nothing;
+  }
+  
+  state Nothing
+  {
+    // Aktiver State während dem regulären Skriptablauf.
+    return Nothing;
+  }
+
+
+}
+</pre>
+Wer die Übersicht gelesen hat, sollte mit dem Verständnis keine großen Schwierigkeiten
+haben. Diesen Rahmen speichern wir schon mal als adv_structures.ec. Spaßeshalber
+mal kompilieren und die adv_structures.eco nach scripts\gametypes\skirmish im 
+Earth-Verzeichnis kopieren. So steht unser neuer Gametype in Skirmish-Spielen zur
+Auswahl, was für Testzwecke völlig reicht. Natürlich tut dieses Grundgerüst noch gar
+nichts - weder stehen beim Gamesetup irgendwelche Optionen offen noch wird uns 
+eine Mapauswahl geboten. Wir können das Spiel nicht einmal starten.</p>
+
+<h3>Die Mapliste</h3>
+<p>Kümmern wir uns als erstes um die Mapliste. Warum sehen wir keine Maps?
+Alle Maps besitzen eine Gametype-Maske, über die festgelegt wird, welche Map zu
+welchem Gametype passt. Wir müssen für unseren Gametype nun ebenfalls so eine
+Maske angeben, und nur, wenn diese beiden Masken zusammenpassen, wird eine Map zur
+Auswahl angezeigt. Um unsere eigene Maske dem Spiel bekanntzugeben, nutzen wir
+den Event SpecialLevelFlags, der bei Auswahl unseres Gametypes sowie bei 
+Optionsänderungen aufgerufen wird. Hier
+können wir mit dem Rückgabewert die Maske angeben, und für Standard-Gametypen ist 
+diese 0x01. Also ergänzen wir folgendes unterhalb der States:
+
+<pre>
+  // ** Events **
+  
+  event SpecialLevelFlags()
+  {
+    // Setze die Maske der erlaubten Maps.
+    return 0x01;
+  }
+</pre>
+Gleich nochmal testen (Earth neustarten nicht vergessen!), wir haben jetzt immerhin
+schon mal die gewohnte Mapauswahl, und wir können das Spiel sogar starten. Passiert
+allerdings nicht viel, wir sehen nur das gewohnt nervtötende Rauschen, das man 
+erhält, wenn man auf unbekanntes Terrain starrt. </p>
+
+<h3>KI-Spieler und Rassenwahl</h3>
+
+<p>Ist euch aufgefallen, dass wir keine KI-Spieler und auch keine Rasse auswählen
+können? Das Problem der KI-Spieler ist im Prinzip genau dasselbe wie die Maps - wir
+müssen eine Maske der erlaubten KI-Skripte zurückgeben. Das Problem mit der 
+Rassenwahl wiederum rührt daher, dass die Default-Einstellung für Gametypes ist, dass
+Map Defaults verwendet werden, was die Rassen auf die von der Karte vorgegebenen
+festsetzt. Da wir Map Defaults ja abschaffen wollten, kümmern wir uns direkt darum.
+Beide Einstellungen werden wieder mit Events gesetzt.
+<pre>
+  event AIPlayerFlags()
+  {
+    // Setze die Maske der erlaubten KI-Skripts.
+    return 0x01;
+  }
+  
+  event RemoveUnits()
+  {
+    // Entferne die von der Map vorgegebenen Einheiten, Gebäude und Rassen.
+    return true;
+  }
+</pre>
+</p>
+
+
+<h3>Startbedingungen für die Spieler</h3>
+
+<p>Nun ist es langsam an der Zeit, die Startbedingungen für die Spieler in Angriff
+zu nehmen, ihnen also ihre Starteinheiten und Startressourcen zu geben. Wir halten
+uns hier an die Standardvorgaben der aktuellen Rebalancing-Version, d. h. UCS bekommt
+3 Infanteristen, 3 Termiten, 1 Drohne und 1 Reloader sowie 5000 Metall, ED bekommt 3 
+Infanteristen und 2 Vologdas sowie 5000 Wasser, LC bekommt 2 Infanteristen und
+5000 Kristall und Aliens bekommen 3 Mantian Ladys. <br>
+Wir werden zu diesem Zweck 5 neue Funktionen einführen. Die Funktion InitPlayers
+wird vom State Initialize aufgerufen und durchläuft alle 8 Startpositionen, soweit
+vorhanden. Ist eine Startposition mit einem Spieler besitzt, wird für diesen eine
+für seine Rasse spezielle Funktion aufgerufen: InitUCSPlayer, InitEDPlayer, 
+InitLCPlayer und InitAlienPlayer. Diese werden dem Spieler ihre Startbedingungen
+geben.<br>
+Zunächst aber definieren wir noch ein paar Konstanten, die uns die Arbeit erleichtern.
+Wir fügen dazu ganz am Anfang, noch vor den State-Deklarationen, folgendes ein:
+<pre>
+  // ** Konstanten **
+  consts
+  {
+    // Spielerrassen
+    raceUCS   = 1;
+    raceED    = 2;
+    raceLC    = 3;
+    raceAlien = 4;
+    
+    // Ressourcentypen
+    resCrystal = 0;
+    resMetal   = 1;
+    resWater   = 2;
+  }
+</pre>
+
+Als nächstes fügen wir die InitPlayers-Funktion ein. Folgenden Code fügen wir
+direkt nach den Konstanten ein:
+<pre>
+  // ** Funktionen **
+  
+  function void InitPlayers()
+  {
+    int i; 
+    player p;
+    int x;
+    int y;
+    
+    // Durchlaufe alle 8 möglichen Spieler
+    for (i = 1; i &lt;= 8; ++i)
+    {
+      // Hole das Objekt, das den Spieler mit Startnummer i repräsentiert.
+      p = GetPlayer(i);
+      
+      // Standardtest, ob es diesen Spieler überhaupt gibt: 
+      // - Zunächst der Vergleich mit null: Haben wir überhaupt ein gültiges
+      //   Spielerobjekt erhalten?
+      // - Dann die Abfrage, ob dieser Spieler überhaupt noch am Leben ist.
+      //   Zu diesem Zeitpunkt im Prinzip überflüssig, schadet aber auch nicht.
+      if (p != null && p.IsAlive())
+      {
+        // Setze die Kameraposition des Spielers auf seinen Startpunkt.
+        // Dafür zunächst die Koordinaten des Startpunktes holen:
+        GetStartingPoint(i, x, y);
+        // Nun die Kamera auf diesen Punkt ausrichten:
+        p.LookAt(x, y, 40, 0, 20);
+
+        // Schlage die Rasse des Spielers nach und rufe die entsprechende 
+        // Init-Funktion auf.
+        if (p.GetRace() == raceUCS)
+          InitUCSPlayer(p);
+        else if (p.GetRace() == raceED)
+          InitEDPlayer(p);
+        else if (p.GetRace() == raceLC)
+          InitLCPlayer(p);
+        else // p.GetRace() == raceAlien
+          InitAlienPlayer(p);
+        
+      }
+    }
+  }
+</pre>
+Ganz schöner Batzen. Die Kommentare sollten das meiste aber erklären. Interessant
+sind vielleicht die Funktionen GetStartingPoint und p.LookAt. Erstere speichert
+uns die X- und Y-Koordinaten des Startpunktes mit der Nummer i in den Variablen x und
+y. Diese übergeben wir dann an p.LookAt, mit der wir die Kamera des Spielers auf 
+diesen Punkt ausrichten. Die übrigen Angaben stellen die Höhe der Kamera und ihre
+Dreh- und Kipprichtung an. Mit den Werten könnt ihr ruhig etwas experimentieren, wenn
+ihr wollt.<br>
+Die Funktion ist für sich allein noch nicht arbeitsfähig, weil sie die speziellen
+Init-Funktionen der 4 Rassen braucht. Also fügen wir die schnell auch noch ein, und
+zwar über InitPlayers, sonst hagelt's Fehler wegen nicht gefundener Funktionen:
+<pre>
+  function void InitUCSPlayer(player p, int x, int y)
+  {
+    // Gib dem Spieler 5000 Metall.
+    p.AddResource(resMetal, 5000);
+    
+    // Nun füge die Starteinheiten am Startpunkt hinzu.
+    // Drohne.
+   	p.CreateObject("U_CH_AR_08_1", x+1, y, 0, 0);
+    //Infanterie
+    p.CreateObject("U_IN_TE_01_1", x, y, 0, 0);
+    p.CreateObject("U_IN_TE_01_1", x, y+1, 0, 0);
+    p.CreateObject("U_IN_TE_01_1", x, y-1, 0, 0);
+    // Reloader
+   	p.CreateObject("U_CH_AS_09_1", x-1, y, 0, 0);    
+    //Termiten
+    p.CreateObject("U_CH_AH_10_1", x+1, y-1, 0, 0);
+    p.CreateObject("U_CH_AH_10_1", x-1, y-1, 0, 0);
+    p.CreateObject("U_CH_AH_10_1", x-2, y-1, 0, 0);    
+  }
+  
+  function void InitEDPlayer(player p, int x, int y)
+  {
+    // Gib dem Spieler 5000 Wasser.
+    p.AddResource(resWater, 5000);
+    
+    // Nun füge die Starteinheiten am Startpunkt hinzu.
+    //Infanterie
+    p.CreateObject("E_IN_MA_01_1", x, y-1, 0, 0);
+    p.CreateObject("E_IN_MA_01_1", x, y+1, 0, 0);
+    // Vologdas
+    p.CreateObject("E_CH_AH_12", x+1, y, 0, 0);
+    p.CreateObject("E_CH_AH_12", x, y, 0, 0);
+  }
+  
+  function void InitLCPlayer(player p, int x, int y)
+  {
+    // Gib dem Spieler 5000 Kristall.
+    p.AddResource(resCrystal, 5000);
+    
+    // Nun füge die Starteinheiten am Startpunkt hinzu.
+    // Infanterie
+    p.CreateObject("L_IN_RG_01_1", x, y, 0, 0);
+    p.CreateObject("L_IN_RG_01_1", x-1, y, 0, 0);
+  }
+  
+  function void InitAlienPlayer(player p, int x, int y)
+  {
+    // Füge Mantian Ladys hinzu.
+    p.CreateObject("A_CH_NU_01_1", x-1, y, 0, 0);
+    p.CreateObject("A_CH_NU_01_1", x+1, y, 0, 0);
+    p.CreateObject("A_CH_NU_01_1", x, y-1, 0, 0);
+  }
+</pre>
+Wir sehen bei diesen Funktionen die Memberfunktionen AddResource und CreateObject
+des player-Objektes in Aktion. Es sollte klar sein, was diese tun. Die Objekt-IDs
+für CreateObject muss man sich aus den Balancingtabellen heraussuchen.<br>
+Wir dürfen nicht vergessen, dass wir die Funktion InitPlayers noch aufrufen müssen.
+Folgende Zeile muss im State Initialize ergänzt werden:
+<pre>
+    InitPlayers();
+</pre>
+Gleich nochmal testen gehen. Wenn wir jetzt das Spiel starten, erhalten wir unsere
+gewohnten Startbedingungen, und wir sehen auch endlich was. Im Prinzip könnten wir 
+jetzt bereits loslegen. Allerdings wäre das Spiel endlos, weil es keine 
+Endbedingung gibt.</p>
+
+<h3>Das Balancing des Rebalancing-Projekts laden</h3>
+<p>Da ist allerdings noch ein kleiner Schönheitsfehler, den wir beseitigen sollten.
+Standardmäßig nutzen Gametypes das Standard-Balancing von Earth, das für MP aber
+nicht unbedingt besonders überzeugend ist. Außerdem haben wir die Startbedingungen
+der Spieler bereits dem Rebalancing-Projekt angepasst, das haut mit dem 
+Standard-Balancing so nicht hin. Wir sollten also schleunigst das Balancing
+des Rebalancing-Projekts laden.<br>
+Ein Blick in die WD-Datei der Rebalancing Beta 8.2 zeigt uns, dass ihr die
+Balancing-Datei "IEO_Rebalancing\IEO_Rebalancing_Beta_v8.2.par" innewohnt. Die wollen
+wir laden. Und das macht man, indem man folgendes Event in der Events-Sektion des
+Skriptes beifügt:
+<pre>
+  event PreLoadGame()
+  {
+    // Lade das Custom Balancing des Rebalancing Projekts.
+    LoadCustomParameters("IEO_Rebalancing\\IEO_Rebalancing_Beta_v8.2.par");
+  }
+</pre>
+
+<p>Zum Abgleich ist das bis hierhin erzielte Ergebnis unter dem Dateinamen
+<i>adv_structures_v1.ec</i> diesem Tutorial beigelegt.</p>
+
+<br>
+<h3>Die Niederlagebedingung implementieren</h3>
+<p>
+Zunächst sollten wir ein paar Vorüberlegungen anstellen. Wann ist das Spiel für einen
+Spieler verloren? Wenn wir erstmal nur UCS, ED und LC betrachten, dann ist die Sache
+ganz klar: Wenn er alle Gebäude verliert. Also müssen wir immer dann, wenn ein 
+Gebäude zerstört wird, überprüfen, ob der Spieler noch weitere Gebäude übrig hat.
+Wenn der Spieler aber gar keine Gebäude gebaut hat, muss für ihn Spielende sein, wenn
+alle seine Starteinheiten vernichtet werden - würden wir das weglassen, könnte ein 
+Spieler einfach nichts bauen und damit andere Spieler ärgern, weil er dann quasi
+unbesiegbar wäre.<br>
+Sowohl für den Fall, dass ein Gebäude, als auch für den Fall, dass eine Einheit
+zerstört wurde, gibt es ein Event, das wir nutzen können, um von diesem Vorfall
+informiert zu werden. Einheiten könnten aber gerade später ziemlich viele aufs Mal
+sterben, und wir würden jedes Mal den Event erhalten - sollen wir dann jedes Mal
+die Niederlagebedingung prüfen? Das könnte unter Umständen auf die Performance 
+schlagen. Wir machen daher einen Kompromiss: Wir implementieren einen Timer, der alle
+3 Sekunden aufgerufen wird und bei allen aktiven Spielern prüft, ob sie vernichtet 
+wurden - allerdings nur, wenn ein Flag vorher gesetzt wird, nämlich von den beiden
+Events RemovedBuilding und RemovedUnit. Nur wenn das nämlich passiert ist, müssen
+wir die Spieler überhaupt überprüfen.<br>
+Wir brauchen dann aber noch etwas: Wir müssen speichern, ob der Spieler bereits
+einmal ein Gebäude gebaut hat, damit wir wissen, welche Niederlagebedingung wir
+auf ihn anwenden müssen. Wenn wir das nicht tun und wir stellen während der 
+Überprüfung fest, dass ein Spieler keine Gebäude hat, dann wüssten wir nicht, ob
+er noch nie eins besessen hat oder ob sein letztes gerade zerstört wurde. Nur im 
+letzteren Fall hätte er verloren. Wir führen also noch ein Array ein, in dem wir
+für alle Spieler eine Flag speichern, ob sie bereits schon einmal mindestens ein
+Gebäude besessen haben.</p>
+
+<p>Fangen wir mit dem Array an. Zunächst müssen wir es definieren, dazu fügen wir
+unter den Konstanten folgenden Code ein:
+<pre>
+  // ** Globale Variablen **  
+  int playerConstructedBuildings[]; // Flag, ob Spieler schon Gebäude gebaut hat
+</pre>
+Das Array müssen wir noch initialisieren. Wunderbare Aufgabe für unseren 
+Initialize-State, also dort flugs vor dem InitPlayers-Aufruf folgenden Code
+einfügen:
+<pre>
+    int i;
+    
+    playerConstructedBuildings.Create(8);
+    for (i = 0; i &lt; 8; ++i)
+      playerConstructedBuildings[i] = false;
+</pre>
+Dies initialisiert das Array mit 8 Elementen und setzt alle 8 auf false. Wir brauchen
+nie mehr als 8 Elemente, da es ja nur maximal 8 aktive Spieler geben kann.<br>
+Als nächstes brauchen wir die Flag, die unserem Timer später sagt, dass er die
+Niederlagebedingung tatsächlich überprüfen muss. Die definieren wir unter der 
+Array-Definition:
+<pre>
+  int checkDefeatConditions; // Flag, ob die Niederlagebedingungen überprüft werden sollen
+</pre>
+Auch diese sollten wir noch initialisieren, also wieder in unserem State unter der
+Array-Initialisierung das einfügen:
+<pre>
+    checkDefeatConditions = false;
+</pre>
+Natürlich ist der Startwert false - solange noch gar nichts zerstört wurde, brauchen
+wir auch nichts überprüfen. Wir fügen nun die beiden Events RemovedUnit und 
+RemovedBuilding hinzu, in denen wir die Flag jeweils auf true setzen.
+Ganz am Ende bei den Events fügen wir also ein:
+<pre>
+  event RemovedUnit(unit destroyed, unit fromUnit, int mode)
+  {
+    // Einheit zerstört, prüfe die Niederlagebedingungen.
+    checkDefeatConditions = true;
+  }
+  
+  event RemovedBuilding(unit destroyed, unit fromUnit, int mode)
+  {
+    // Gebäude zerstört, prüfe die Niederlagebedingungen.
+    checkDefeatConditions = true;
+  }
+</pre>
+Die Parameter der Events interessieren uns in diesem Fall nicht, wir bekommen da
+gesagt, welche Unit/Gebäude entfernt wurde und von wem (falls zutreffend).</p>
+
+<p>
+Bleibt noch die Hauptarbeit: Wir müssen den Timer implementieren, der alle 3 Sekunden
+schaut, ob die Flag gesetzt ist und in diesem Fall die Niederlagebedingung bei den
+Spielern überprüft. Im State Initialize fügen wir folgendes hinzu:
+<pre>
+    // Aktiviere den Timer, der die Niederlagebedingungen prüft.
+    SetTimer(0, 3*30);
+</pre>
+Die Funktion SetTimer aktiviert hier den Timer mit der Nummer 0 und gibt ihm ein
+Intervall von 3*30 GameTicks vor (bei normalem Spieltempo entsprechen 30 GameTicks
+einer Sekunde, das Intervall beträgt also 3s). Müssen wir den Timer also nur noch
+implementieren. Da Timer als Events funktionieren, fügen wir also folgendes bei den
+Events ein:
+<pre>
+  event Timer0()
+  {
+    // Überprüfe die Niederlagebedingungen, falls die Flag gesetzt ist.
+    int i;
+    player p;
+    int numObjects;
+    int playerKilled;
+    
+    if (checkDefeatConditions)
+    {
+      checkDefeatConditions = false;
+      for (i = 1; i &lt;= 8; ++i)
+      {
+        // hole Spielerobjekt.
+        p = GetPlayer(i);
+        if (p != null && p.IsAlive())
+        {
+          playerKilled = false;
+          if (p.GetRace() != raceAlien)
+          {
+            // Prüfe Niederlagebedingung für UCS, ED, LC.
+            // Schaue, ob der Spieler vorher bereits Gebäude gebaut hat:
+            if (playerConstructedBuildings[i])
+            {
+              // In diesem Fall hat der Spieler verloren, falls seine Anzahl Gebäude
+              // auf 0 sinkt:
+              if (p.GetNumberOfBuildings() == 0)
+              {
+                // setze Niederlageflag auf ja.
+                playerKilled = true;
+              }
+            }
+            else
+            {
+              // Der Spieler hat noch keine Gebäude, dann verliert er, wenn er alle
+              // Starteinheiten verliert:
+              if (p.GetNumberOfUnits() == 0)
+              {
+                // setze Niederlageflag auf ja.
+                playerKilled = true;
+              }
+            }
+          }
+          else
+          {
+            // Prüfe Niederlagebedingung für Aliens.
+            // ...
+          }
+          
+          if (playerKilled)
+          {
+            // Niederlage des Spielers wurde festgestellt.
+            p.GameDefeat(true);
+          }
+        }
+      }
+    }
+  }
+</pre>
+Verdammt viele ifs. Was tun wir da? Zunächst schauen wir, ob die Flag gesetzt ist, 
+dass wir die Bedingungen überhaupt prüfen sollen. Falls ja, setzen wir die Flag
+zunächst mal zurück - sonst würde ab sofort die Bedingung ja jedesmal geprüft werden.
+Anschließend durchlaufen wir die 8 möglichen aktiven Spieler, wie schon bei
+InitPlayers. Wenn der entsprechende Spieler existiert und noch am Leben ist, prüfen
+wir ihn auf Herz und Nieren. Wir verwenden dazu eine Flag, die wir zunächst treuherzig
+auf false setzen. Wenn der Spieler dann als Rasse UCS, ED oder LC hat, schauen
+wir, ob er bereits Gebäude konstruiert hatte. Falls ja, schauen wir, wie viele er 
+aktuell hat - wenn er keines mehr hat, hat er verloren. Hatte er noch keine
+Gebäude, schauen wir stattdessen, wie viele Einheiten er noch hat - alle weg? Dann
+hat er verloren, und wir setzen gnadenlos die playerKilled-Flag auf true. Ganz am
+Ende schauen wir dann, ob die Flag gesetzt ist, und wenn sie das ist, dann 
+sagen wir dem Spieler, dass er leider, leider verloren hat. Der Parameter true der
+Funktion GameDefeat besagt, dass der Spieler den Statistikbildschirm sehen soll - so 
+viel dürfen wir ihm ruhig zugestehen.<br>
+Diese Niederlagebedingung hat eine winzig kleine Lücke. Rein theoretisch könnte ein 
+Spieler, da der Timer mit der Überprüfung ja nur alle 3s läuft, in dem Moment, in dem
+sein letztes Gebäude zerstört wurde, gerade so ein neues bauen, dass er keine
+Niederlage erhält. Das ist aber ohne Belang, mit dem einen Gebäude wird er kaum
+lange überlegen, um diese "Lücke" müssen wir uns insofern keine großen Gedanken machen.
+<br>
+Oh, fast vergessen, da fehlt ja noch was! Wir müssen ja die Flag 
+playerConstructedBuilding noch auf true setzen, wenn der Spieler ein Gebäude
+gebaut hat. Wo machen wir das? Natürlich im Event AddedBuilding. Also flugs noch
+folgenden Event hinzufügen:
+<pre>
+  event AddedBuilding(unit added, int mode)
+  {
+    // Neues Gebäude gebaut, setze die Flag des betreffenden Spielers auf true.
+    playerConstructedBuildings[added.GetIFFNum()] = true;
+  }
+</pre>
+Wir bekommen das neu erstellte Objekt als Parameter übergeben - von diesem nutzen
+wir dann gleich die Funktion GetIFFNum, die uns die Spielernummer des besitzenden
+Spielers sagt. Genau das, was wir brauchen.</p>
+<p>Am besten gleich mal ausprobieren gehen und eine UCS, ED oder LC KI vermöbeln :)
+Alle bisherigen Errungenschaften finden sich zum Abgleich in der Datei 
+<i>adv_structures_v2.ec</i>.</p>
+
+
+<h3>Niederlage für die Aliens</h3>
+<p>
+Da die Aliens als einzige Gebäude nur ihre Verteidigungstürme haben, würde die 
+Anwendung unserer normalen Niederlagebedingung bei den Aliens sie stark in Nachteil
+bringen, weil man vergleichsweise wenig zu zerstören hätte. Wir zählen bei den
+Aliens daher etwas anders. Neben den Türmen zählen wir bei den Aliens auch die
+Anzahl ihrer Mantian Units sowie die Kokoons von morphenden und sich klonenden
+Einheiten hinzu. Wenn diese Gesamtzahl auf 0 sinkt, hat der Alien-Spieler verloren.
+Das entspricht in etwa der Niederlagebedingung der anderen Rassen.<br>
+Frisch ans Werk, das ist jetzt auch gar nicht mehr so kompliziert. Wir ergänzen
+lediglich noch den Part unseres Timers, den wir vorhin ausgelassen haben. Also
+schnell die folgende Stelle im Code finden und umschreiben:
+<pre>
+          else
+          {
+            // Prüfe Niederlagebedingung für Aliens.
+            numObjects = p.GetNumberOfBuildings()  // Anzahl Verteidigungstürme
+              + p.GetNumberOfUnitsWithChasis("A_CH_NU_01_1", false) // Ladys
+              + p.GetNumberOfUnitsWithChasis("A_CH_NU_02_1", false) // Princess
+              + p.GetNumberOfUnitsWithChasis("A_CH_NU_03_1", false) // Queens
+              + p.GetNumberOfTransformationCopulas() // Kokoons
+            ;
+            if (numObjects == 0)
+            {
+              // Alienspieler besiegt
+              playerKilled = true;
+            }
+          
+          }
+</pre>
+Wir zählen hier einfach die Anzahl der Gebäude, der Kokoons sowie die Anzahl der
+Mantian Ladys, Princesses und Queens zusammen und vergleichen diese Gesamtzahl
+gegen 0. Keine große Hexerei.</p>
+
+<br>
+
+<h3>Die Siegbedingung</h3>
+
+<p>Nachdem die Niederlage eines Spielers ja nun hinreichend erkannt wird, müssen wir
+uns noch darum kümmern, dass Spieler auch einen Sieg erzielen können. Überlegen wir
+uns kurz, wann ein Spiel gewonnen ist: Genau dann, wenn es keine Feinde mehr gibt.
+Wir müssten also immer dann prüfen, ob noch Feinde übrig sind, wenn ein Spieler
+vernichtet wurde oder das Spiel verlassen hat. Allerdings kann es auch passieren,
+dass die Spieler ihre Allianzen untereinander ändern, wodurch es plötzlich ebenfalls
+keine Feinde mehr geben könnte. Über den ersteren Fall werden wir mit dem Event 
+KilledNetworkPlayer informiert, aber zweiteres wird uns nicht mitgeteilt - wenn
+wir also sauber alle Möglichkeiten abdecken wollen, müssen wir wohl oder übel auf
+Polling ausweichen. Was aber nicht so schlimm ist, der Check ist nicht besonders
+anspruchsvoll.<br>
+Wir führen ihn einfach ebenfalls in einem Intervall von 3s aus, hängen ihn also 
+einfach an unseren Timer0 dran. Also flugs den Timer0. Zunächst brauchen wir jedoch
+ein paar zusätzliche Variablen: Ein zweites player-Objekt, eine zweite Zählvariable
+und ein weiteres Flag. Diese ergänzen wir daher ganz am Anfang von Timer0:
+<pre>
+    player p2;
+    int j;
+    int activeEnemies;
+</pre>
+Jetzt können wir ganz am Ende unsere Siegbedingung einfügen:
+<pre>
+    // Prüfe, ob es noch verbliebene verfeindete Spieler gibt. Falls nicht,
+    // beende das Spiel für alle verbliebenen Spieler mit einem Sieg.
+    activeEnemies = false;
+    for (i = 1; i &lt;= 7; ++i)
+    {
+      p = GetPlayer(i);
+      if (p != null && p.IsAlive())
+      {
+        // prüfe mit jedem anderen noch aktiven Spieler, ob diese in feindlichem
+        // Verhältnis zueinander stehen.
+        for (j = i+1; j &lt;= 8; ++j)
+        {
+          p2 = GetPlayer(j);
+          if (p2 != null && p2.IsAlive())
+          {
+            // stehen die Spieler sich feindlich gegenüber, zumindest von einer Seite?
+            if (p.IsEnemy(p2) || p2.IsEnemy(p))
+            {
+              // dann gibt es noch aktive Feinde.
+              activeEnemies = true;
+              break;
+            }
+          }
+        }
+        // falls aktive Feinde, können wir die Schleife vorzeitig abbrechen.
+        if (activeEnemies)
+          break;
+      }
+    }
+    
+    // falls KEINE aktiven Feinde mehr gefunden wurden, beenden wir das Spiel für
+    // alle verbliebenen Spieler mit einem Sieg.
+    if (!activeEnemies)
+    {
+      for (i = 1; i &lt;= 8; ++i)
+      {
+        p = GetPlayer(i);
+        if (p != null &amp;&amp; p.IsAlive())
+          p.GameVictory(false, true);
+      }
+    }
+</pre>
+
+Der letzte Teil ist schnell erklärt: Wenn keine aktiven Feinde gefunden wurden
+(activeEnemies == false), dann gehen wir alle noch aktiven Spieler durch und
+signalisieren ihnen Sieg. Der zweite Parameter an GameVictory besagt wieder, dass
+der Spieler die Spielstatistiken zu sehen bekommen soll, während der erste irgendwas
+mit Virtual Agents zu tun hat. Da die uns nicht interessieren, setzen wir den
+getrost auf false.<br>
+Schauen wir uns den interessanteren Teil an. Wir haben zwei verschachtelte Schleifen.
+Die äußere geht alle Spieler von 1 bis 7 durch, während die innere die verbleibenden
+Spieler von der Position der äußeren Schleife aus bis zum Ende (Position 8) abläuft.
+Mit beiden Spielerobjekten bewaffnet vergleichen wir dann, ob p oder p2 den jeweils
+anderen als Feind ansieht. Falls das der Fall ist, setzen wir activeEnemies auf
+true und können beide Schleifen mit break vorzeitig verlassen. Da haben wir gegenüber
+der Implementierung im Originalskript doch tatsächlich noch viel wirtschaftlicher
+gearbeitet ;)</p>
+
+<p>An dieser Stelle ist das Skript als Gametype bereits voll funktionsfähig. Daher
+Zeit, das bisher erreichte noch einmal durchzugehen und mit der 
+<i>adv_structures_v3.ec</i> abzugleichen.  Die Grundfunktionalität ist vorhanden,
+alles was jetzt kommt, sind Features ;)</p>
+
+<br>
+
+<h2>Ein paar Schönheitsoperationen</h2>
+
+<h3>Konstruktionstemplates</h3>
+
+<p>Wer den Gametype schon mal etwas intensiver ausprobiert hat, wird festgestellt 
+haben, dass in den Baumenus standardmäßig überhaupt keine Einheiten vorhanden sind
+- man muss alle erst im Konstruktionsmenu zusammenbauen, sogar solche
+Standardeinheiten wie Drohnen und Termiten! Es fehlen eindeutig die Standard-Templates,
+die hier normalerweise vorgegeben werden. Das ist natürlich ein bisschen lästig,
+also sollten wir das besser korrigieren. Ein Einheitentemplate (Schablone) können
+wir mit der Funktion AddObjectTemplate der player-Objekte hinzufügen. Der richtige
+Ort hierfür sind unsere InitPlayer-Funktionen für UCS, ED und LC (Aliens brauchen
+keine Templates). Wir fügen dort jeweils die aus dem Standard-Skript kopierten
+Objekt-Templates ein. In der Funktion InitUCSPlayer fügen wir also ein:
+<pre>
+    // Objekttemplates hinzufügen
+    // Termite mit Standard-Engine und Schild
+    p.AddObjectTemplate("U_CH_AH_10_1#U_EN_NO_10_1,U_IE_SG_01_1");
+    // Drohne mit Schild
+    p.AddObjectTemplate("U_CH_AR_08_1#U_IE_SG_01_1");
+    // Reloader mit Schild
+    p.AddObjectTemplate("U_CH_AS_09_1#U_IE_SG_01_1");
+    // Scarab mit Chaingun, konv. PZ, Standard-Engine und Schild
+    p.AddObjectTemplate("U_CH_AJ_01_1#U_WP_CH_01_1,U_AR_CL_01_1,U_EN_NO_01_1,U_IE_SG_01_1");		
+    // Spider mit Chaingun, konv. PZ, Standard-Engine und Schild
+    p.AddObjectTemplate("U_CH_GJ_02_1#U_WP_CH_02_1,U_AR_CL_02_1,U_EN_NO_02_1,U_IE_SG_01_1");		
+    // Kazuar mit Chaingun, konv. PZ, Standard-Engine, Schild und Robofix
+    p.AddObjectTemplate("U_CH_GT_03_1#U_WP_CH_03_1,U_AR_CL_03_1,U_EN_NO_03_1,U_IE_SG_01_1,U_IE_RD_01_1");
+    // Jaguar mit Raketen, konv. PZ, Standard-Engine, Schild und Robofix
+    p.AddObjectTemplate("U_CH_GT_04_1#U_WP_AR_04_1,U_AR_CL_04_1,U_EN_NO_04_1,U_IE_SG_04_1,U_IE_RD_01_1");
+    // Lion mit zwei Plasmawaffen, konv. PZ, Standard-Engine, Schild und Robofix
+    p.AddObjectTemplate("U_CH_GT_05_1#U_WP_PB_05_1,U_WP_PB2_05_1,U_AR_CL_05_1,U_EN_NO_05_1,U_IE_SG_04_1,U_IE_RD_01_1");
+    // Condor mit Plasmawaffe, konv. PZ, Standard-Engine und Schild
+    p.AddObjectTemplate("U_CH_AA_06_1#U_WP_PL_06_1,U_AR_CL_06_1,U_EN_NO_06_1,U_IE_SG_04_1");
+    // Scorpion mit Plasmawaffe, konv. PZ, Standard-Engine, Schild
+    p.AddObjectTemplate("U_CH_GA_07_1#U_WP_PL_07_1,U_AR_CL_07_1,U_EN_NO_07_1,U_IE_SG_01_1");		
+    // Beetle mit Plasmabomben, konv. PZ, Power-Engine und Schild
+    p.AddObjectTemplate("U_CH_AB_12_1#U_WP_PB_12_1,U_AR_CL_12_1,U_EN_PR_12_1,U_IE_SG_01_1");
+</pre>
+Für die LC fügen wir in InitLCPlayer entsprechendes hinzu:
+<pre>
+    // Objekttemplates hinzufügen
+    // Athena mit Elektrokanone, konv. PZ, Standard-Engine und Schild
+    p.AddObjectTemplate("L_CH_AJ_01_1#L_WP_EL_01_1,L_AR_CL_01_1,L_EN_NO_01_1,L_IE_SG_01_1");
+    // Apollo mit Scharfschützengewehr, konv. PZ, Standard-Engine und Schild
+    p.AddObjectTemplate("L_CH_GJ_02_1#L_WP_SG_02_1,L_AR_CL_02_1,L_EN_NO_02_1,L_IE_SG_01_1");
+    // Ares mit UWB, konv. PZ, Standard-Engine und Schild
+    p.AddObjectTemplate("L_CH_AT_03_1#L_WP_SB_03_1,L_AR_CL_03_1,L_EN_NO_03_1,L_IE_SG_01_1");
+    // Phobos mit Magnetkanone, konv. PZ, Standard-Engine und 2x Schild
+    p.AddObjectTemplate("L_CH_GT_04_1#L_WP_MP_04_1,L_AR_CL_04_1,L_EN_NO_04_1,L_IE_SG_04_1,L_IE_SG_04_1");
+    // Deimos mit 2x PSI, konv. PZ, Standard-Engine und 2x Schild
+    p.AddObjectTemplate("L_CH_GT_05_1#L_WP_PS_05_1#L_WP_PS2_05_1,L_AR_CL_05_1,L_EN_NO_05_1,L_IE_SG_04_1,L_IE_SG_04_1");
+    // Charon mit Elektrokanone, 3x Magnetkanone, konv. PZ, Standard-Engine und 2x Schild
+    p.AddObjectTemplate("L_CH_GT_06_1#L_WP_MP_06_1#L_WP_EL_06_1,L_WP_MP2_06_1,L_WP_MP2_06_1,L_AR_CL_06_1,L_EN_NO_06_1,L_IE_SG_04_1,L_IE_SG_04_1");
+    // Pluto mit Plasmakanone, konv. PZ, Standard-Engine und Schild
+    p.AddObjectTemplate("L_CH_AA_07_1#L_WP_PC_07_1,L_AR_CL_07_1,L_EN_NO_07_1,L_IE_SG_01_1");
+    // Crion mit Demolisher, konv. PZ, Standard-Engine und Schild
+    p.AddObjectTemplate("L_CH_GA_08_1#L_WP_PC_08_1,L_AR_CL_08_1,L_EN_NO_08_1,L_IE_SG_01_1");
+    // Mercury mit AntiAir, konv. PZ, Standard-Engine und Schild
+    p.AddObjectTemplate("L_CH_AF_11_1#L_WP_AA_11_1,L_AR_CL_11_1,L_EN_NO_11_1,L_IE_SG_01_1");
+    // Atlas mit Plasmastrahl, konv. PZ, Standard-Engine und Schild
+    p.AddObjectTemplate("L_CH_AB_12_1#L_WP_PB_12_1,L_AR_CL_12_1,L_EN_NO_12_1,L_IE_SG_01_1");
+</pre>
+
+Fehlt nur noch ED. Here we go für InitEDPlayer:
+<pre>
+    // Objekttemplates hinzufügen
+    // Vologda mit Schild
+    p.AddObjectTemplate("E_CH_AH_12#E_IE_SG_01_1");
+    // Amursk mit Laserblaster, konv. PZ, Standard-Engine und Schild
+    p.AddObjectTemplate("E_CH_AJ_01_1#E_WP_SL_01_1,E_AR_CL_01_1,E_EN_NO_01_1,E_IE_SG_01_1");		
+    // Dubna mit Laser, konv. PZ, Standard-Engine und Schild
+    p.AddObjectTemplate("E_CH_GJ_02_1#E_WP_SL_02_1,E_AR_CL_02_1,E_EN_NO_02_1,E_IE_SG_01_1");
+    // Gagarin mit Laser, konv. PZ, Standard-Engine und Schild
+    p.AddObjectTemplate("E_CH_GJ_03_1#E_WP_SL_03_1,E_AR_CL_03_1,E_EN_NO_03_1,E_IE_SG_01_1");
+    // Rasputin mit Kanone, konv. PZ, Standard-Antrieb, Schild und Reparatur
+    p.AddObjectTemplate("E_CH_GT_04_1#E_WP_CA_04_1,E_AR_CL_04_1,E_EN_NO_04_1,E_IE_SG_04_1,E_IE_RD_01_1");
+    // Kirov mit Kanone, konv. PZ, Standard-Engine, Schild und Reparatur
+    p.AddObjectTemplate("E_CH_GT_05_1#E_WP_CA_05_1,E_AR_CL_05_1,E_EN_NO_05_1,E_IE_SG_04_1,E_IE_RD_01_1");
+    // Moscow mit 2x Kanone, konv. PZ, Standard-Engine, Schild und Reparatur
+    p.AddObjectTemplate("E_CH_GT_06_1#E_WP_CA_06_1,E_WP_CA2_06_1,E_AR_CL_06_1,E_EN_NO_06_1,E_IE_SG_04_1,E_IE_RD_01_1");
+    // Orsk mit Artillerieraketen, konv. PZ, Standard-Engine und Schild
+    p.AddObjectTemplate("E_CH_AA_07_1#E_WP_GR_07_1,E_AR_CL_07_1,E_EN_NO_07_1,E_IE_SG_01_1");
+    // Aurora mit Earthquake, konv. PZ, Standard-Engine und Schild
+    p.AddObjectTemplate("E_CH_GA_08_1#E_WP_EQ_08_1,E_AR_CL_08_1,E_EN_NO_08_1,E_IE_SG_01_1");
+    // Khan mit Schweren Bomben, konv. PZ, Standard-Engine und Schild
+    p.AddObjectTemplate("E_CH_AF_11_1#E_WP_GB_11_1,E_AR_CL_11_1,E_EN_NO_11_1,E_IE_SG_01_1");
+    // Transporter mit Schild
+    p.AddObjectTemplate("E_CH_TR_09_2#E_IE_SG_01_1");
+    // Gruz mit Schild
+    p.AddObjectTemplate("E_CH_AR_13_1#E_IE_SG_01_1");
+</pre>
+</p>
+
+<h3>EarthNet-Wertung abschalten</h3>
+<p>
+Man kann festlegen, ob für Spiele, die übers EarthNet gespielt werden, das Ergebnis
+an das EarthNet gemeldet und in dessen Statistik eingerechnet werden soll. Allerdings
+sind die Statistiken und Rankings des EarthNets ziemlich sinnlos. Wenn im Skript so
+angegeben, sendet jeder Spieler an das EN, ob er das Spiel verloren oder gewonnen hat.
+Sonst gar nichts. Weder, was für ein Spiel das war, wer mitgespielt hat, wie die 
+Bündnisse aussahen, noch sonst irgendwas. Mal abgesehen davon, dass man diese
+Nachrichten sehr leicht abfangen und fälschen könnte (Sieg statt Niederlage), reicht
+das einfach vorne bis hinten nicht, um eine aussagekräftige Statistik zu bilden.
+Die Standardspieltypen senden Statistiken deswegen schon nur, wenn alliierte Siege
+nicht erlaubt sind. Ich bin sogar der Meinung, dass man es gleich ganz lassen sollte.
+Aus diesem Grund werde ich für diesen Gametype zeigen, wie man die Wertungen 
+abschaltet, und ich würde dringend empfehlen, das auch zu tun. Wenn ihr das nicht
+tun wollt, müsstet ihr euch zumindest noch so einige Gedanken wegen Betrugsgefahr
+machen - im Moment könnten beliebig viele Spieler einfach im Spiel alle eine Allianz
+schließen und bekämen dafür sofort einen Sieg - Stats-Pushing vom feinsten. Hier
+müsste man die Siegbedingung erweitern, aber das ist meiner Meinung nach den Aufwand
+nicht wert.<br>
+Die Statistiken stattdessen einfach nicht zu senden, geht ganz einfach. Wir müssen
+dafür nur einen einzigen Befehl in der Funktion InitPlayers ergänzen. Sucht folgende
+Stelle in dieser Funktion:
+<pre>
+        // Setze die Kameraposition des Spielers auf seinen Startpunkt.
+        // Dafür zunächst die Koordinaten des Startpunktes holen:
+        GetStartingPoint(i, x, y);
+        // Nun die Kamera auf diesen Punkt ausrichten:
+        p.LookAt(x, y, 40, 0, 20);
+</pre>
+und fügt direkt dahinter diese Zeilen ein:
+<pre>
+        // Ergebnisse sollen nicht ans EarthNet gemeldet werden.
+        p.SetSendENResults(false);
+</pre>
+Das dürfte wohl selbsterklärend sein.
+</p>
+
+<h3>Eine optionale Ingame-Uhr hinzufügen</h3>
+<p>
+Manchmal kann es ganz nützlich sein, einen zeitlichen Überblick über sein Spiel zu haben,
+ganz besonders dann, wenn man neue Taktiken ausprobiert und einstudiert und dabei ein Auge
+auf die Zeitdauer haben muss, die man für bestimmte Aktionen benötigt. Als kleines Gimmick
+implementieren wir daher nun eine Spieldaueranzeige für unseren Gametype, die optional
+zuschaltbar ist - dabei lernen wir auch gleich noch, wie man solche Auswahloptionen für einen
+Gametype hinzufügt.<br>
+Anfangen müssen wir dabei mit einer neuen speziellen enum-Variable, die den Namen der Option
+und die zugehörigen möglichen Auswahloptionen speichert. Die Option für unsere Uhr wollen wir
+"Ingame Clock" nennen, zur Auswahl stehen "Disabled" und "Enabled" (aus/an). Dazu fügen
+wir das folgende Stückchen Code am Anfang des Gametypes unter die vorhandenen Variablen
+ein:
+<pre>
+  // ** Enums **
+
+  // Zur An-/Ausschaltung unserer Ingame-Uhr
+  enum clockSelect
+  {
+    "Disabled",
+    "Enabled",
+    multi:
+    "Ingame clock"
+  }
+</pre>
+Enums sehen in EarthC etwas merkwürdig aus. Zum Einen erstellt man hiermit keinen Datentyp 
+wie etwa in C++, sondern eine konkrete Variable mit Namen clockSelect. Hierbei werden
+einfach alle zur Auswahl stehenden Optionen als kommaseparierte Liste angegeben, wobei
+der letzte Eintrag nach dem "multi" den Namen der Auswahl selbst angibt. Das wird am besten
+verständlich, wenn man die Auswahl später in Aktion erlebt, also noch etwas Geduld :)<br>
+Wir müssen die Auswahl jetzt noch aktiv integrieren. Dazu fügen wir am Ende des Gametypes
+den folgenden Codeblock ein:
+<pre>
+ // ** Commands **
+  command Combo1(int selected) button clockSelect
+  {
+    clockSelect = selected;
+    return true;
+  }
+</pre>
+Wir können maximal 4 verschiedene Auswahloptionen anbieten, diese können entsprechend mit
+Combo1 bis Combo4 nach demselben Schema eingebaut werden. Für jede Auswahl brauchen wir
+ein entsprechendes Enum, das hier mit "button xxx" übergeben wird. Dies sorgt dafür, dass
+die von uns gewählten Texteinträge angezeigt werden. Im Rumpf des Commands müssen wir dann
+allerdings die an uns übergebene aktuell gewählte Auswahl in der Enum-Variablen speichern.
+Dazu sei angemerkt, dass die Optionen, die ein Enum zur Verfügung stellt (in unserem Fall
+"Disabled" und "Enabled") einem int-Wert zugeordnet werden, und zwar aufzählend von 0. 
+"Disabled" entspricht also dem Wert 0, "Enabled" dem Wert 1. Wenn man noch mehr Optionen hat,
+dann erhalten die entsprechend 2, 3, .... Am besten das Ganze jetzt einmal kompilieren und
+im Spiel anschauen.
+</p>
+<p>Angezeigt wird unsere Auswahl also schon einmal. Jetzt müssen wir sie nur mit Funktion
+füllen. Für die Anzeige der verstrichenen Spieldauer nutzen wir eine Funktion, mit der man
+kurze Statusmeldungen am Bildschirm ausgeben kann. Für Spieler interessant sind verstrichene
+Sekunden und Minuten, wir wollen also eine sekundengenaue Anzeige. Also müssen wir die 
+Anzeige jede Sekunde aktualisieren. Das schreit geradezu nach einem Timer. Wir werden
+also nun einen zusätzlichen Timer während der Initialisierungsphase aktivieren - aber nur,
+wenn unsere Ingame-Uhr auch eingeschaltet wurde. Ansonsten lassen wir den Timer weg, und
+die Uhr wird wunschgemäß nicht angezeigt. Im state Initialize fügen wir folgendes nach
+dem ersten SetTimer-Aufruf hinzu:
+<pre>
+    // Aktiviere den Timer für die Ingame-Uhr
+    if (clockSelect == 1)
+    {
+      SetTimer(1, 1*30);
+    }
+</pre>
+Im Fall, dass clockSelect auf "Enabled" (=1) steht, aktivieren wir den Timer mit der
+Nummer 1, und zwar mit dem Intervall von einer Sekunde. Wir müssen diesen Timer lediglich
+noch implementieren:
+<pre>
+  event Timer1()
+  {
+    // Zeige die bisher verstrichenen Sekunden und Minuten im Spiel an.
+    int minutes;
+    int seconds;
+    int curTicks;
+    string clockText;
+    
+    curTicks = GetWorldTick(); // Anzahl der verstrichenen Gameticks seit Spielstart
+    minutes = curTicks / (60*30);
+    seconds = (curTicks % (60*30)) / 30;
+</pre>
+Zunächst einmal holen wir uns die Anzahl der bislang verstrichenen Gameticks und errechnen
+daraus die Anzahl der verstrichenen Sekunden und Minuten. Wer keinen Programmierhintergrund
+hat, könnte die Vorschriften zur Errechnung der Minuten- und Sekundenzahlen etwas verwirrend
+finden. Am besten mal im Kopf überlegen. % ist der Modulo-Operator, liefert also den Rest
+einer Division (5 % 3 = 2).
+<pre>
+    clockText.Format("%d:%02d", minutes, seconds);
+    SetConsoleText(clockText);    
+  }
+</pre>
+Zunächst müssen wir die errechneten Minuten und Sekunden in einen String übertragen. Wir
+wählen hierbei das Format M:SS, also vorne die Minuten mit so vielen Stellen, wie sie 
+brauchen, dahinter abgetrennt durch einen Doppelpunkt die Sekunden mit immer genau 2 Stellen,
+die im Zweifelsfall mit 0 aufzufüllen sind. Anschließend geben wir den String auf dem
+Bildschirm aus - und das ist schon alles! Kompilieren, ausprobieren :)
+</p>
+<p>adv_structures_v4.ec enthält alle Errungenschaften bis zu diesem Punkt. Falls irgendwas
+nicht so recht will, wäre jetzt ein guter Zeitpunkt, die Arbeit abzugleichen.</p>
+
+
+<h3>Zuschauer-Modus</h3>
+<p>Leider bietet Earth von Haus aus keinen Zuschauermodus. Erst, wenn ein Spieler besiegt
+wurde, hat er die Möglichkeit, ein Zuschauer zu werden. Eine rundum überzeugende
+Zuschauerfunktion von Anfang an können wir auch nicht bieten. Aber einige Karten haben
+zusätzliche Startpositionen für Zuschauer gesetzt, und wir können zumindest eine Option
+anbieten, dass alle Spieler, die von einer bestimmten Position an aufgestellt sind, von 
+Anfang an als Zuschauer starten. Um es nicht zu kompliziert zu machen, senden wir ihnen
+dazu einfach direkt eine Niederlage - sie erhalten dann die Möglichkeit, zum Zuschauermodus
+zu wechseln. <br>
+Zunächst brauchen wir eine neue Auswahloption, das sollte jetzt kein Problem mehr darstellen:
+<pre>
+  // Zuschauerfunktion
+  enum spectatorSelect
+  {
+    "No spectators",
+    "From pos. 3",
+    "From pos. 4",
+    "From pos. 5",
+    "From pos. 6",
+    "From pos. 7",
+    "From pos. 8",
+    multi:
+    "Spectator mode"
+  }
+</pre>
+und
+<pre>
+  command Combo2(int selected) button spectatorSelect
+  {
+    spectatorSelect = selected;
+    return true;
+  }
+</pre>
+Es dürfte klar sein, dass wenigstens die ersten beiden Positionen keine Zuschauerplätze
+sein können, ergo führen wir sie nicht in der Auswahl auf. Um die Zuschaueroption mit
+Funktion zu füllen, müssen wir dafür sorgen, dass bei eingeschalteter Option alle 
+Spieler mit einer Startnummer größer/gleich der gewählten Position als Zuschauer behandelt
+werden. Dazu erweitern wir die InitPlayers-Funktion. Wir fügen nach p.SetSendResults 
+folgendes ein:
+<pre>
+        if (spectatorSelect != 0 &amp;&amp; i >= spectatorSelect+2)
+        {
+          // Spieler als Zuschauer behandeln.
+          p.ResetFogInArea(x, y, 255);
+          p.GameDefeat(false);
+          continue;
+        }
+</pre>
+Wenn der Modus angeschaltet ist und die Startposition größer/gleich der gewählten ist
+(Achtung: Wir müssen +2 addieren, weil wir in der Auflistung ja die Positionen 1 und 2
+ausgelassen haben), dann wird dem Spieler eine Niederlage gesendet, so dass er den
+Zuschauermodus wählen kann. Außerdem decken wir für ihn vorher die Karte auf - das hat
+keinen spielerischen Nutzen, aber da er keine Einheiten bekommt, ist für ihn normalerweise
+die Karte komplett zu, er sieht also nur das Rauschen, bis er seine Niederlage bestätigt hat.
+Wenn die Initialisierung mal wieder eine Weile dauert, kann einem das Rauschen ziemlich
+auf die Nerven gehen. continue am Ende sorgt dafür, dass mit dem nächsten Spieler am 
+Anfang der Schleife weitergemacht wird und keine spezielle Initialisierung mehr für diesen
+Spieler vorgenommen wird. Das wäre auch bereits alles. Am besten direkt ausprobieren mit ein
+paar Freunden :)</p>
+
+
+<h3>Teams</h3>
+<p>Was Earth leider ebenfalls nicht bietet, sind vor Spielstart festgelegte Teams. Man muss
+die Bündnisse normalerweise ingame selbst knüpfen. Wir können auch dieses Problem zwar nicht
+100% ideal lösen, aber wir können immerhin ein bisschen was dran basteln und orientieren
+uns hier an Spacetugs Superstorm. Wir bieten also eine weitere Option an, mit der man die
+Startpositionen zu Teams gruppieren kann: Das funktioniert dann so, dass der Host z. B.
+"Group by 2" einstellt. Das Skript alliiert dann automatisch die Startpositionen 1+2, 3+4,
+5+6 und 7+8 (sofern die letzteren überhaupt vorhanden sind). Wenn einzelne Positionen leer
+sind, passiert da eben nichts. Man kann auf einer 3v3-Map also ein 2v2 so arrangieren, dass
+man jeweils den 3. und den 6. Startplatz freilässt und dann "Group by 3" einstellt. 
+"Group by 2" wäre hier ein Fehler, weil dessen Alliierung vermutlich nicht dem Maplayout
+entspräche.<br>
+Frisch ans Werk. Die dritte und letzte Auswahloption:
+<pre>
+  // Allianzen
+  enum teamSelect
+  {
+    "No teams",
+    "Group by 2",
+    "Group by 3",
+    "Group by 4",
+    multi:
+    "Team mode"
+  }
+  
+  // ...
+  
+    command Combo3(int selected) button teamSelect
+  {
+    teamSelect = selected;
+    return true;
+  }
+</pre>
+Zum Setzen der Allianzen fügen wir eine neuen Funktion InitAlliances ein, die wir aus
+dem state Initialize nach InitPlayers aufrufen:
+<pre>
+    if (teamSelect != 0)
+      InitAlliances();
+</pre>
+Die Funktion selbst sieht folgendermaßen aus:
+<pre>
+  function void InitAlliances()
+  {
+    int groupSize;
+    int maxPos;
+    int i, j;
+    player p1, p2;
+    
+    groupSize = teamSelect+1;
+    maxPos = 8;
+    if (spectatorSelect != 0)
+      maxPos = spectatorSelect+1;
+    
+    for (i = 1; i &lt;= maxPos; ++i)
+    {
+      p1 = GetPlayer(i);
+      if (p1 == null || !p1.IsAlive())
+        continue;
+      
+      p1.SetAIControlOptions(eAIControlAINeutralAI, false);
+      p1.SetAIControlOptions(eAIControlChooseEnemies, false);
+      
+      for (j = i+1; j &lt;= i+groupSize &amp;&amp; j &lt;= maxPos; ++j)
+      {
+        if (j % groupSize == 1)
+          break;
+        p2 = GetPlayer(j);
+        if (p2 == null || !p2.IsAlive())
+          continue;
+        p1.SetAlly(p2);
+        p2.SetAlly(p1);
+      }
+    }    
+  }
+</pre>
+Wie die Funktion im Einzelnen funktioniert, überlasse ich als Hausaufgabe zum Herausfinden :)
+Als Hinweis sei allerdings noch gesagt, dass die p1.SetAIControlOptions bestimmte
+KI-Optionen setzen, damit ein Verbünden mit der KI möglich wird. Dies nimmt man am besten
+als gegeben hin und macht sich darüber nicht weiter groß Gedanken.
+
+
+<h3>Fertig!</h3>
+<p>Damit wären wir mit diesem Tutorial fertig. Das umgesetzte Gametype-Skript ist schon
+recht mächtig und sollte genügend Stoff zum Arbeiten an eigenen Gametypes bieten. Als
+Übungsaufgabe könnte man ja z. B. darüber nachdenken, die Teamoption so zu erweitern, dass
+es eine Option "Auto" gibt, die automatisch alle vorhandenen Spieler in zwei gleich große
+Teams aufteilt. Ich wünsche jedenfalls viel Spaß und hoffentlich viel Erfolg bei eigenen
+Experimenten. Die finale Version des Skriptes liegt als adv_structures_final.ec bei.<br>
+<br>
+- CABAListic
+
+</body>
+
+</html>

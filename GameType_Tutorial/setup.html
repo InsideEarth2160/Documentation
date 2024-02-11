@@ -1,0 +1,50 @@
+<html>
+
+<head>
+<title>EarthC Einführung - Setup</title>
+<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+
+<h1>EarthC-Compiler benutzen</h1>
+
+<br>
+
+<h2>Umgebung einrichten</h2>
+
+<p>Im Prinzip braucht ihr nicht viel, um mit EarthC loszulegen. Ihr braucht nur den
+EarthC-Compiler selbst und einen Editor. Syntaxhighlighting ist, wie üblich, sehr
+von Vorteil, das C/C++-Highlighting der meisten Editoren funktioniert recht gut. 
+Empfehlenswert für Leute, die noch keinen guten Editor zum Programmieren haben, wäre
+z. B. <a href="http://www.scintilla.org">SciTE</a>. Außerdem sehr hilfreich und
+nötig, wenn ihr die Originalskripte von Reality Pump kompilieren wollt, ist ein
+C/C++-Präprozessor. Wenn ihr bereits einen C/C++-Compiler installiert habt, könnt
+ihr dessen Präprozessor verwenden, anderenfalls solltet ihr den 
+<a href="http://www.mingw.org">MinGW-Compiler</a> herunterladen und installieren. Ihr
+müsst dann in der Datei EarthC2160.bat des SDK den Pfad zum Präprozessor anpassen. 
+Wenn ihr MinGW verwendet, müsst ihr konkret die Zeile mit cl.exe auskommentieren (Rem
+davor) und bei der mit cpp.exe das Rem entfernen. Dann noch cpp.exe mit dem vollständigen
+Pfad ausstatten (liegt im MinGW-Installationsverzeichnis unter bin) und die Änderungen
+speichern.</p>
+
+
+<br>
+
+<h2>Compiler aufrufen</h2>
+
+<p>Der Compiler wird in einer Konsole (Eingabeaufforderung) aufgerufen. Ihr gebt 
+einfach ein:
+<pre>EarthC2160.bat InputFile OutputFile</pre>
+InputFile ist dabei das Skript, das ihr kompilieren wollt (Dateiendung üblicherweise
+.ec), OutputFile ist das Ziel, unter der das Kompilat erstellt wird (Dateiendung muss
+.eco sein, damit das Spiel das Skript erkennt). Euer Skript wird nun zuerst durch
+den C-Präprozessor gejagt und anschließend an den EarthC-Compiler übergeben. Wenn
+ihr keinen Präprozessor verwenden wollt, könnt ihr auch direkt EarthC2160.exe mit
+denselben Parametern aufrufen. Ihr könnt dann aber die Standardskripte von Reality
+Pump nicht übersetzen.
+</p>
+
+</body>
+
+</html>

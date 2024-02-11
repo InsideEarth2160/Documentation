@@ -1,0 +1,31 @@
+body,p,h1,h2,h3,h4 {
+	font-family: Arial, Helvetica, Sans-Serif;
+	color: #000000;
+	text-align: justify;
+}
+
+body {
+	background: #cccccc;
+	margin-left: 35pt;
+	margin-right: 35pt;
+}
+
+h1 {
+	font-size: 20pt;
+}
+
+h2 {
+	font-size: 16pt;
+}
+
+h3 {
+	font-size: 13pt;
+}
+
+p {
+	font-size: 12pt;
+}
+
+pre {
+	margin-left: 20pt;
+

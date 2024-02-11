@@ -1,0 +1,438 @@
+<html>
+
+<head>
+<title>EarthC Einführung - Überblick über die Sprache</title>
+<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+
+<h1>EarthC - Übersicht über die Sprache</h1>
+
+<br>
+
+<h2>Allgemeines</h2>
+<p>
+EarthC ähnelt syntaxmäßig C/C++. Programmierer, die mit einer dieser Sprachen vertraut 
+sind, sollten keine allzugroßen Probleme haben, sich in EarthC zurecht zu finden.
+Jede Anweisung wird mit einem Semikolon abgeschlossen:
+<pre>Anweisung;</pre>
+Ein Anweisungsblock wird von geschweiften Klammern umgeben.
+<pre>
+{
+  Anweisung1;
+  Anweisung2;
+  ...
+}
+</pre>
+
+Kommentare funktionieren ebenfalls im C++-Stil:
+<pre>
+// Dies ist ein Kommentar.
+
+/*
+  Das hier auch.
+*/
+</pre>
+</p>
+
+<h3>Variablen</h3>
+<p>EarthC ist eine typisierte Sprache, d. h. man muss Variablen mit ihrem Typ 
+definieren. Die Anzahl der verschiedenen Variablentypen, die man in einem Skript
+verwenden kann, ist aber sehr überschaubar. Es gibt nur die folgenden Typen:
+<ul>
+<li>int - Ganzzahlen
+<li>string - Zeichenketten
+<li>unit - Einheiten und Gebäude
+<li>player - Spieler (menschlich oder KI)
+</ul>
+Die Definition einer Variablen funktioniert wie in C: Man gibt den gewünschten 
+Typ gefolgt vom Variablenbezeichner ein.
+<pre>
+// Definiert eine Ganzzahl
+int meineZahl;
+
+// Definiert eine Zeichenkette
+string meinString;
+
+// Definiert eine Einheit
+unit meineEinheit;
+
+// Definiert einen Spieler
+player meinSpieler;
+</pre>
+Wie in C können Variablendefinitionen außerdem nur am Anfang einer Ausführungseinheit
+- also Funktion, States, Events, Commands bzw. global am Anfang des Skriptes stehen, 
+nicht jedoch in if-Blöcken, Schleifen etc.
+</p>
+<p>
+Darüber hinaus gibt es noch Arrays, die, soweit ich mich erinnere, aber nur mit
+int und unit funktionieren. Ein Array definiert man folgendermaßen:
+<pre>
+// Array von ints
+int zahlenArray[];
+
+// Array von units
+unit einheitenArray[];
+</pre>
+
+Arrays kann man z. B. wie folgt verwenden. Es gibt noch weitere Funktionen, die sich
+in der Funktionsreferenz finden.
+<pre>
+int meinArray[]; // Definiere das Array
+int i; // Zählervariable
+
+
+// Initialisiere das Array mit 10 Elementen
+meinArray.Create(10);
+
+// Weise den Elementen aufsteigend die Zahlen von 0 bis 9 zu
+for (i = 0; i &lt; 10; ++i)
+{
+  meinArray[i] = i;
+}
+</pre>
+</p>
+
+
+<h3>Operatoren</h3>
+
+<p>EarthC kennt die gängigen Rechenoperatoren sowie logische und bitweise 
+boolsche Operatoren. Die Operatoren sind ebenfalls von C entliehen. Operatoren
+wie += etc. kennt EarthC allerdings nicht. Hier eine Liste der mir bekannten
+unterstützten Operatoren:
+
+<ul>
+<li>Zuweisung: =
+<li>Ist gleich (nicht für string!): ==
+<li>Ungleich: !=
+<li>Grundrechenarten: +, -, *, /
+<li>Modulo: %
+<li>Logisches Und, Oder, Nicht: &amp;&amp;, ||, !
+<li>Bitweises Und, Oder, Nicht: &amp;, |, !
+<li>Exklusives Oder (XOR): ^
+<li>Ordnung: &lt;, &gt;, &lt;=, &gt;=
+</ul>
+
+
+<h3>Konstanten</h3>
+
+<p>Konstanten können global im consts-Block definiert werden. Es können nur Integer 
+als Konstanten verwendet werden. Dies sieht dann ungefähr so aus:
+<pre>
+consts
+{
+  konstante1 = 12;
+  konstante2 = 183;
+  ...
+}
+</pre>
+
+
+<h3>Bedingte Anweisungen</h3>
+<p>Wie in so ziemlich jeder Sprache steht das if-Konstrukt helfend zur Seite, um
+die Ausführung von Anweisungen an eine Bedingung zu knüpfen:
+<pre>
+if (Bedingung)
+{
+  // Anweisungen werden nur ausgeführt, wenn Bedingung wahr ist.
+  Anweisung1;
+  Anweisung2;
+  ...
+}
+else
+{
+  // Anweisungen werden nur ausgeführt, wenn Bedingung nicht wahr ist.
+  // Kann auch weggelassen werden.
+  Anweisung1;
+  Anweisung2;
+  ...
+}
+</pre>
+Man kann statt Anweisungsblöcken auch nur jeweils eine einzelne Anweisung auf if 
+folgen lassen.
+</p>
+
+
+<h3>Schleifen</h3>
+EarthC kennt die for- und while-Schleifen, die wieder einmal wie in C funktionieren.
+Für die for-Schleife müssen wir uns vorher lediglich eine Zählervariable definiert
+haben.
+<pre>
+int i; // Zählervariable
+
+// Führe die Anweisungen 10x aus
+for (i = 0; i &lt; 10; ++i)
+{
+  // auszuführende Anweisungen
+}
+
+
+// Die while-Schleife führt Code solange aus, wie die Bedingung erfüllt ist.
+while (Bedingung)
+{
+  // auszuführende Anweisungen
+}
+</pre>
+
+Die Schlüsselwörter break und continue stehen uns auch zur Verfügung. So können wir
+mit break die Schleife vorzeitig abbrechen und mit continue die Ausführung am Anfang
+der Schleife fortsetzen.
+</p>
+
+<br>
+
+<h2>Ausführungsblöcke</h2>
+
+<h3>Funktionen</h3>
+<p>Funktionen kennt man aus jeder Sprache, und ihre Syntax ist wieder an C angelehnt. 
+Eine Funktion definiert man folgendermaßen:
+<pre>
+function RETURN_TYPE Funktionsname(PARAM1_TYPE param1, PARAM2_TYPE param2, ...)
+{
+  // Anweisungen
+  // ...
+}
+</pre>
+Funktionen können eine beliebige Anzahl Parameter gemäß ihrer Definition haben, wobei
+für jeden Parameter jeder der 4 Variablentypen verwendet werden kann. Auch beim 
+Rückgabewert können alle 4 Typen verwendet werden, alternativ kann man void verwenden,
+wenn die Funktion nichts zurückliefern soll. Der Rückgabewert der Funktion lässt sich
+mit return festlegen:
+<pre>
+function int Addiere(int zahl1, int zahl2)
+{
+  return zahl1 + zahl2;
+}
+</pre>
+
+Funktionen werden wie in C/C++ aufgerufen. Die Beispielfunktion von eben wird z. B.
+so aufgerufen:
+<pre>
+int ergebnis;
+
+ergebnis = Addiere(13, 28);
+</pre>
+Man kann den Rückgabewert (falls vorhanden) auch ignorieren. Außer int haben alle
+Variablen außerdem Memberfunktionen, die man mit der aus C++ bekannten Punktnotation
+aufrufen kann. Wenn man z. B. die Rasse eines Spielers abfragen möchte, geht das
+folgendermaßen:
+<pre>
+int race;
+player p;
+
+// p muss noch irgendwie mit einem realen Spieler belegt werden...
+// ...
+
+race = p.GetRace();
+</pre>
+
+
+<h3>Events</h3>
+Events werden automatisch aufgerufen, wenn bestimmte Ereignisse eintreten. Anders als
+Funktionen kann man keine beliebigen Events definieren, sondern abhängig davon, was 
+für eine Art von Skript man schreibt, gibt es bestimmte vorgegebene Events, die man
+verwenden kann. Events haben teilweise einen Rückgabewert und erhalten je nach Art des
+Events einen oder mehrere Parameter. Man kann sie auch nicht direkt aufrufen, sie
+werden vom Spiel aufgerufen, wenn das zugehörige Ereignis eingetreten ist. Welche
+Events es jeweils für einen Skripttyp gibt, kann man der EarthC-Referenz entnehmen.
+Für Missions- und Gametype-Skripte gibt es z. B. einen Event AddedUnit, der aufgerufen
+wird, wann immer ein Spieler eine neue Einheit erhält. Wenn einen das interessiert,
+kann man dieses Event verwenden, indem man folgenden Code in sein Skript einfügt:
+<pre>
+event AddedUnit(unit newUnit, int addMode)
+{
+  // Reagiere auf das Event...
+  // ...
+}
+</pre>
+Bemerkenswert ist, dass der Rückgabetyp des Events in seiner Definition nicht 
+auftaucht, den muss man in der EarthC-Referenz nachschauen und wissen. 
+Das Beispielevent erhält als Parameter das unit-Objekt der neu hinzugekommenen 
+Einheit sowie einen Integer-Wert, der angibt, ob die Einheit neu konstruiert wurde
+(addmode == eNotifyCreated) oder nur den Spieler gewechselt hat (addmode ==
+eNotifyChangedPlayer).<br>
+Jeder Skripttyp verfügt außerdem über die sogenannten Timer-Events, die jeweils
+TimerX heißen (X ist eine Zahl zwischen 0 und 7). Diese haben weder einen Rückgabewert
+noch bekommen sie Parameter. Sie sind, wie der Name schon sagt, Timer, die in einem
+regelmäßigen Zeitintervall aufgerufen werden - aber nur, wenn man sie vorher selbst
+aktiviert hat. Dafür gibt es die Funktion SetTimer(int timer, int interval), mit
+der man genau dies machen kann. timer ist die Nummer des Timers, den man aktivieren
+will, interval ist das Zeitintervall (in GameTicks), in dem der Timer aufgerufen 
+werden soll. Ein Wert von 0 für das Intervall deaktiviert den Timer wieder.</p>
+<p>Aus Performancegründen solltet ihr die zur Verfügung stehenden Events immer nutzen,
+wenn sie für eure Ziele nützlich sind. Die einzige andere Möglichkeit, bestimmte
+Ereignisse zu überprüfen, ist nämlich, sie regelmäßig in den States (kommt gleich)
+abzufragen (Polling), was natürlich suboptimal ist. Der Event wird aber genau
+dann aktiviert, wenn das zugehörige Ereignis tatsächlich stattgefunden hat.
+Leider stellt einem EarthC nicht besonders viele Events zur Seite, so dass man
+um Polling meistens trotzdem nicht herumkommt. Aber wo immer möglich, sollte man
+auf die Events zurückgreifen!</p>
+
+<h3>States</h3>
+Ganz grob ähneln States Funktionen ohne Rückgabewert und ohne Parameter. Man kann
+beliebig viele erstellen und verwenden. Allerdings kann man sie, ähnlich wie Events,
+nicht direkt selbst aufrufen, stattdessen gibt es immer genau einen aktiven State,
+den die Engine in regelmäßigen Abständen aufruft. Welches der gerade aktive State ist,
+kann man allerdings jederzeit festlegen, sowohl in den States selbst als auch an
+jeder anderen Stelle im Skript.<br>
+Wofür ist dies nützlich? States sind im Prinzip ein gutes Mittel zur Ablaufkontrolle
+im Skript. Wenn man z. B. ein Einheitenskript schreibt, dann kann eine solche
+Einheit verschiedene Zustände (eben States) haben, z. B. wenn sie sich bewegt,
+wenn sie angreift oder wenn sie auch einfach nur herumsteht. Für jeden dieser 
+Zustände würde man dann einen eigenen State schreiben, und wann immer die Einheit
+etwas Neues tut, wird der State entsprechend gewechselt.<br>
+Bevor man States benutzen kann, muss man sie zuerst deklarieren. Die Deklaration
+eines States sieht folgendermaßen aus:
+<pre>
+state StateName;
+</pre>
+StateName kann man beliebig wählen. Der erste im Skript deklarierte State ist übrigens
+anfangs auch der aktive State, so lange, bis ein anderer aktiv gesetzt wird.
+Nach der Deklaration kann man den State dann definieren:
+<pre>
+state StateName
+{
+  // Anweisungen, die ausgeführt werden sollen.
+  // ...
+}
+</pre>
+Wie gesagt wird der aktive State regelmäßig aufgerufen, normalerweise jede Sekunde.
+Ein State muss eine return-Anweisung an seinem Ende verwenden, die gleichzeitig 
+angibt, welcher State beim nächsten Mal aufgerufen werden soll. Dies ist also eine
+Möglichkeit, den aktiven State zu wechseln - will man nicht wechseln, gibt man eben
+den Namen des aktuellen States selbst zurück. Man kann außerdem, per Komma getrennt,
+hinter dem Namen des States in der Returnanweisung eine Zeit (in GameTicks) angeben,
+nach der der neue State aufgerufen werden soll. Wenn sie weggelassen wird, wird 
+automatisch ein Wert von 30 (= 1s) angenommen. Beispiel:
+<pre>
+state Initialize;
+state Nothing;
+
+state Initialize
+{
+  // Mache alles, was zur Initialisierung gehört.
+  // Danach wechsle zum State Nothing
+  return Nothing;
+}
+
+state Nothing
+{
+  // Der "Alltags"-State, wenn nichts Besonderes vorliegt.
+  // Tue irgendwas
+  return Nothing, 60;
+}
+</pre>
+Die in diesem Beispiel gezeigten beiden States werden in jedem der Standardskripte
+von RP verwendet, und ich würde empfehlen, sie ebenfalls zu verwenden. Initialize
+wird, da als erster deklariert, ganz am Anfang bei Spielstart aufgerufen, danach
+gibt er ab an Nothing, der der Standard-State ist, wenn sonst nichts ansteht. Man
+kann aber natürlich auch ein anderes Schema verwenden, wenn man will.<br>
+Um den aktiven State von irgendwo anders im Skript zu ändern (z. B. als Reaktion auf
+ein Event oder in einer Funktion), gibt es die Anweisung state, die genauso aussieht
+wie eine State-Deklaration, aber im ausführenden Code eben die Bedeutung eines State-
+Wechsels hat. Dies geht also z. B. so:
+<pre>
+function void ChangeState()
+{
+  // wechsle den aktiven State
+  state NeuerState;
+}
+</pre>
+</p>
+
+<h3>Commands</h3>
+<p>Commands sind Events sehr ähnlich. Sie werden als direkte Reaktion auf die Eingaben
+des Spielers aufgerufen. Man trifft sie insbesondere bei Einheitenskripten an, die
+per Commands über Befehle des Spielers informiert werden und darauf die gewünschte
+Aktion ausführen sollen. Sie finden aber auch Verwendung in Gametype-Skripten, wo sie
+als Reaktion auf eine Auswahl des Spielers bei den Spieloptionen aufgerufen werden.
+Alle Commands haben als Rückgabewert int. Die Rückgabe von false (0) bedeutet dabei,
+dass man den Befehl des Spielers nicht verarbeitet hat. Falls es noch andere
+Abnehmer für diesen Befehl gibt, wird er dann weitergereicht. Die Rückgabe von true
+bedeutet hingegen, dass der Befehl des Spielers abgearbeitet wurde, er wird dann nicht
+mehr an andere Abnehmer weitergegeben.<br>
+Die zur Verfügung stehenden Commands kann man wie immer aus der EarthC-Referenz 
+entnehmen. Bei einigen Commands sieht man hinter ihrer Definition noch Angaben wie
+"button xxx item xxx priority xxx", diese findet man z. B. bei den Commands von 
+Unit-Skripten. Hiermit wird der Button und die Reihenfolge der Funktion im Befehlsmenu
+des Spielers festgelegt. Wenn man nicht weiß, was man tut, sollte man diese Werte
+besser aus den Standardskripten kopieren.<br>
+
+Bei Gametype-Skripten gibt es die speziellen Commands ComboX (X = 1-4), mit denen
+man die Auswahloptionen des Spieltyps festlegen kann. Hierfür muss man noch ein 
+von EarthC so genanntes Enum mit den Auswahloptionen anlegen und beim Command
+angeben. Das sieht in der Praxis so aus:
+<pre>
+// Das "Enum" mit den Auswahloptionen:
+enum gametypeOptions
+{
+  // zunächst eine Liste der Auswahloptionen
+  "Auswahl 1",
+  "Auswahl 2",
+  "Auswahl 3",
+  // dann muss man noch den Namen der Auswahlmöglichkeit angeben
+  multi: "Bitte auswählen"
+}
+
+// Nun die Auswahl noch im Gametype registrieren:
+command Combo1(int chosen) button gametypeOptions
+{
+  gametypeOptions = chosen;
+  return true;
+}
+</pre>
+Die Auswahlmöglichkeiten des Enums werden in int-Werte übersetzt, man kann den Enum
+also wie eine int-Variable verwenden und so abfragen. "Auswahl 1" ist z. B. Wert 0
+usw.. Auf diese Weise kann man im Initialize-State dann etwa auf die gewählte
+Option reagieren.
+</p>
+
+<br>
+
+<h2>Die verschiedenen Skripttypen</h2>
+
+<p>Es gibt im Wesentlichen fünf verschiedene Typen von Skripten, die ihr mit EarthC
+erstellen könnt, nämlich Einheiten-, KI-, Kampagnen-, Missions- und Gametypeskripte.
+Die Einheitenskripte unterteilen sich allerdings noch einmal auf die verschiedenen
+Typen von Einheiten, die jeweils separate Skripte nutzen (das Prinzip bleibt aber
+dasselbe). Missionen und Gametypes sind sich überdies sehr ähnlich, Missionen sind
+lediglich in Kampagnen eingebunden, während Gametypes eben im Skirmish und Multiplayer
+zur Auswahl stehen.</p>
+
+<h3>Grundgerüst für Skripte</h3>
+<p>Alle bisher vorgestellten sprachlichen Konzepte werden in einen großen Block 
+eingeschlossen, außerhalb dessen nichts stehen darf. Dieser Block ist immer so
+aufgebaut:
+<pre>
+SCRIPT_TYPE "SkriptName"
+{
+  // hier kommt alles weitere hinein
+  // ...
+}
+</pre>
+
+SCRIPT_TYPE ist dabei der Skripttyp. Für Gametype- und Missionsskripte ist dieser
+<i>mission</i>, für Kampagnenskripte <i>campaign</i>, für KI-Spieler <i>player</i>, 
+und bei den Einheitenskripten gibt es folgende zur Wahl: <i>unit, infantry,
+hacker, hero, buildrobot, harvester, supplier, plane, laserunit, transporter</i>. Wie
+dem geneigten Leser vielleicht schon aufgefallen sind, finden sich alle diese Typen
+auch in der EarthC-Referenz wieder, man kann dort aus dem Baum erkennen, welches
+Objekt auf welchem aufbaut und welche Funktionen es zur Verfügung stellt.<br>
+Der Skriptname ist bei Einheitenskripten relativ egal, bei den anderen wird er an
+entsprechender Stelle, wenn man den Gametype / die Mission / die KI auswählt, 
+angezeigt.</p>
+
+<br>
+
+<p>Damit wäre ich auch am Ende der Übersicht über die EarthC-Sprache. Ich empfehle 
+nun, das Tutorial durchzuarbeiten, indem ich euch zeige, wie man einen Gametype
+schreibt und dabei einige der gängigen Möglichkeiten von EarthC wie auch den ein
+oder anderen Kniff zeigen werde. Für alles Weitere ist es das beste, euch mit
+der Funktionsreferenz (am besten die von mir kommentierte Version) durch vorhandene
+Skripte zu arbeiten und mit eigenen kleinen Skripten anzufangen. Viel Spaß.
+</p>
+
+</body>
+
+</html>
